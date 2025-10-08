@@ -1,0 +1,11 @@
+.card{
+    border-color: #052C65;
+}
+.card-header{
+    background-color: #052C65;
+}
+.btn-primary{
+    background-color: #052C65;
+    color: white;
+    border: none;
+}
