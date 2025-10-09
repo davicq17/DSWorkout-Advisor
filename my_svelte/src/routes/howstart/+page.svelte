@@ -1,0 +1,57 @@
+ <!--carrusel-->
+    <div class="container d-flex-colum">
+        <div id="carouselExampleAutoplaying" class="carousel slide my-3 justify-content-center" data-bs-ride="carousel">
+            <div class="carousel-inner justify-content-center">
+              <div class="carousel-item active">
+                <img src="../img/actividad_fisica.jpg" class="d-block w-100" alt="Ejercitate" height="500" >
+              </div>
+              <div class="carousel-item">
+                <img src="../img/plan_alimentación.jpg" class="d-block w-100" alt="Alimentate bien" height="500px" >
+              </div>
+              <div class="carousel-item justify-content-center">
+                <img src="../img/asesor.jpg" class="d-block w-100" alt="asesor fitness" height="500px">
+              </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+        <!--la idea es que cada articulo vaya debajo del otro-->
+        <div class="p-2">
+            <article>
+                <h2 class="h3 fw-bold">1.Registrate e Inicia sesión</h2>
+                <p class="parrafo">Registrate para que puedas adquirir un usuario y empezar a explorar la herramienta, familiarisandote con su entorno y funcionalidad, mejorando su experiensa e interacción con la pagina </p>
+            </article>
+            <div class="part2">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/1nZ7aLIilEU?si=uWnrjwNnPtxYImWJ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
+        </div><br>
+        <div class="p-2">
+            <article>
+                <h2 class="h3 fw-bold">2.Llena el formulario</h2><br>
+                <p class="parrafo">Complete el formulario de E-Trainer con la información de su estado fisico para que este pueda sugerir una rutina y plan de alimentación personalizados con los cuales  podras empezar con su cambio de avitos y considerarte todo un novato en el mundo de la actividad fisica</p>
+                
+            </article>
+            <div class="part2">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/340gB7WQBkI?si=eG-veNP6acbeZ8KV" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
+        </div><br>
+        <div class="p-2">
+            <article>
+                <h2 class="h3 fw-bold">3.Empiza tu actividad fisica</h2><br>
+                <p class="parrafo">Parar empezar con el mejoramiento de su estado físico y su salud es inherente iniciar la actividad física con la rutina de ejercicio sugerida por nuestro asesor virtual podrás comenzar a ejercitarte, para sugerirle esta rutina se tienen en cuenta sus objetivos y metas fitness al igual que su actual estado físico, por lo que si crees que la rutina sugerida no es adecuada o no es de su agrado podrá contactar a uno de nuestros instructores para que le comente sus inquietudes.</p>
+                <p class="parrafo">Si tienes inconvenientes con la ejecución de los ejercicios podrás acceder a un pequeño apartado donde encontrarás una guía sobre la correcta ejecución del ejercicio que desees.  </p>
+            </article>
+        </div>
+        <div class="p-2">
+            <article>
+                <h2 class="h3 fw-bold">4.Sigue el plan de alimentación </h2>
+                <p class="parrafo">Para complementar tu rutina de ejercicio debes alimentarte adecuadamente, un buen plan de alimentación puede potenciar los resultados  obtenidos, nuestro asesor virtual te sugerirá un plan de alimentación de acuerdo a tus metas para que en conjunto con la rutina de ejercicio mejore tu estado físico, con estos 2 elementos podrás notar mejoras en tu físico y por ende en tu salud, te recomendamos ser muy estricto y disciplinado con el plan de alimentación para asegurar unos buenos resultados.¡Mucho ánimo, actitud y Suerte! </p>
+            </article>
+        </div>
+    </div>

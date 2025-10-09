@@ -1,0 +1,59 @@
+<!--formulario de registro-->
+    <div class="container col-lg-7 mt-5">
+        <form class="row g-3">
+            <div class="col-12 d-flex justify-content-center">
+                <h1 class="h1 ">REGISTRO</h1>
+            </div>
+            <div class="col-md-6 form-floating mb-3">
+                <input type="text" class="form-control" id="inputName" placeholder="Nombres">
+                <label for="inputName" class="text-secondary" >Nombre</label>
+            </div>
+            <div class="col-md-6 form-floating mb-3">
+                <input type="text" class="form-control" id="inputLastName" placeholder="Apellidos">
+                <label for="inputLastName" class="text-secondary">Apellido</label>
+            </div>
+            <div class="col-md-6 form-floating mb-3">
+                <input type="text" class="form-control" id="inputUserName" placeholder="Usuario">
+                <label for="inputUserName" class="text-secondary">Usuario</label>
+            </div>
+            <div class="col-md-6 form-floating mb-3">
+                <input type="email" class="form-control" id="inputEmail" placeholder="Correo">
+                <label for="inputEmail" class="text-secondary">Email</label>
+            </div>
+            <div class="col-md-6 form-floating mb-3">
+                <input type="password" class="form-control" id="inputPassword" placeholder="Ingrese su contraseña" minlength="8">
+                <label for="inputPassword" class="text-secondary">Contraseña</label>
+            </div>
+            <div class="col-md-6 form-floating mb-3">
+                <input type="password" class="form-control" id="inputPassword2" placeholder="Ingrese su contraseña"  minlength="8">
+                <label for="inputPassword2" class="text-secondary">Confirma la contraseña</label>
+            </div>
+            <div class="col-md-6 form-floating mb-3">
+                <input type="number" class="form-control" id="inputCell" placeholder="Ingrese su contraseña" maxlength="10" minlength="6">
+                <label for="inputCell" class="text-secondary">Celular</label>
+            </div>
+            <div class="col-md-6 form-floating mb-3">
+                <select class="form-select" name="role" id="inputrol">
+                    <!--onchange="Speciality()"-->
+                    <option value="0" selected></option>
+                    <option value="2">Usuario</option>
+                    <option value="3">Profesional</option>
+                </select>
+                <label for="inputrol" class="text-secondary">Rol</label>
+            </div>
+            <!--div de la especialidad del profesional-->
+            <div id="specialityField" class="col-md-6 form-floating mb-3 offset-md-6" style="display:none;">
+                <input type="text" class="form-control" id="inputSpeciality" placeholder="Especialidad del profesional">
+                <label for="inputSpecialty" class="text-secondary">Especialidad</label>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">
+                    <a class="text-decoration-none text-white" >Crear</a>
+                    <!--onclick="Registrar()"-->
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <a class="text-decoration-none text-white" href="/login">Volver</a>
+                </button>
+            </div>
+        </form>
+    </div>

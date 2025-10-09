@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>DS Workout Advisor</title>
+        <link rel="icon" href="../img/e-trainer.ico">
+        <!--bootstrap-->
+        <link rel="stylesheet" href="../bootstrap-5.3.3-dist/css/bootstrap.css">
+        <!--css-->
+        <link rel="stylesheet" href="../css/Fijos.css">
+        <!--<link rel="stylesheet" href="../css/Fijos.css">
+        <link rel="stylesheet" href="../css/login.css">
+        <link rel="stylesheet" href="../Css/fithome.css">-->
+    </head>
+<body onload="GetRutina()">
+    <!--inicio de sesion del cliente-->
+    <nav class="navbar navbar-expand-sm px-4">
+        <div class="container-fluid">
+          <!--logo-->
+          <img class="navbar-branad" src="../img/e-trainer.ico" alt="DS LOGO" widht="60px" height="60px">
+          <a class="h5 text-decoration-none text-white" href="#" id="NombreUser">Bienvenido(a) </a>
+            <!--boton para abrir el menu-->
+          <button class="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target="#menu-navbar" aria-controls="menu-navbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+            <!--menu-->
+          <div class="collapse navbar-collapse justify-content-end" id="menu-navbar">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link fw-bold active" href="fit_intUser.html">RUTINA</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-bold" href="FisicEstate.html">ESTADO FISICO</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-bold" href="##" onclick="cerrarSesion()">CERRAR SESION</a>
+                </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <!--contenedor de todo-->
+    <div class="container">
+        <div class="row my-4">
+            <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
+                <div id="Rutina" class="card mb-5">
+                    <h4 class="card-header">Diagnostico</h4>
+                    <div class="card-body ">
+                        <div id="RutinaUser" class="my-4 mx-1 border border-info rounded p-1" >
+                            <!--DIAGNOSTICO-->
+                        </div>
+                        <!--NOTA-->
+                        <!--<div class="form-floating">
+                            <textarea id="txtnota" class="form-control"></textarea>
+                            <label for="txtnota">Queja u opinion:</label>
+                        </div>-->
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-7 col-md-7 col-sm-12 col-xs-12 ">
+                <div class="card">
+                    <div class="card-header bg-success">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <h4 id="nombrerutina" class="text-center text-white"><!--nombre de la rutina--></h4>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <h4 id="nivelR" class="text-center text-white">Nivel: <!--nivel de la rutina--></h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-2">
+                            <label for="descripR" class="form-label"><b>Descripción</b></label>
+                            <!--descripción de la rutina-->
+                            <textarea name="" readonly id="descripR" class="form-control"></textarea required>                               
+                        </div>
+                        <div class="table-responsive">
+                            <table id="tablaRtUser" class=" table table-striped " style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>id</th>
+                                        <th><b>Ejercicios</b> </th>
+                                        <th><b>Duración</b></th>
+                                        <th><b>Series</b></th>
+                                        <th><b>Repeticiones</b></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                           </table>
+                       </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--pie de pagina-->
+    <div class="container-fluid">
+        <div class="row p-5 pb-1 bg-dark text-white">
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+            <p class="h5 mb-3">Autores</p>
+            <div class="mb-2">
+              <p class="text-secondary">David José Carrillo Quevedo</p>
+            </div>
+            <div class="mb-2">
+              <p class="text-secondary">Stiven Alexander Chico Pelaez</p>
+            </div>
+          </div> 
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+            <p class="h5 mb-3">contactos</p>
+            <div class="mb-2">
+              <p class="text-secondary">Telefono +57 ******</p>
+            </div>
+            <div class="mb-2">
+              <p class="text-secondary">whatsApp +57 ******</p>
+            </div>
+          </div> 
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+            <p class="h5 mb-3">siguenos</p>
+            <a class="text-decoration-none" href="#">
+              <img src="../img/facebook.ico" alt="facebook">
+          </a>
+          <a class="text-decoration-none" href="#">
+              <img src="../img/instagram.ico" alt="Instagran">
+          </a>
+          <a class="text-decoration-none" href="#">
+              <img src="../img/Twiter.ico" alt="Twiter">
+          </a>
+          <a class="text-decoration-none" href="#">
+              <img src="../img/tik-tok.ico" alt="Tiktok">
+          </a>
+          </div> 
+          <div class="col-12 pt-3">
+            <p class="text-center">Copyright © 2023 DS Workout Advisor. Todos los derechos reservados.</p>
+          </div>
+          <div class="col-12">
+            <p class="text-center"><a class="text-decoration-none text-white" href="#"> Terminos y condiciones</a></p>
+          </div>
+        </div>
+      </div>
+      <!--javascript-->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+      <script src="../Js/InicioVerify.js"></script>
+      <script
+      src="https://code.jquery.com/jquery-3.7.1.min.js"
+      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+      crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdn.datatables.net/2.1.3/css/dataTables.dataTables.css" />
+        <script src="https://cdn.datatables.net/2.1.3/js/dataTables.js"></script>
+      <script src="../Js/UserFunciones.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
