@@ -1,3 +1,4 @@
+
 <!--formulario de registro-->
     <div class="container col-lg-7 mt-5">
         <form class="row g-3">

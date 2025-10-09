@@ -1,21 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>DS Workout Advisor</title>
-        <link rel="icon" href="../img/e-trainer.ico">
-        <!--bootstrap-->
-    <link rel="stylesheet" href="../bootstrap-5.3.3-dist/css/bootstrap.css">
-    <!--css-->
-    <!--<link rel="stylesheet" href="../css/registro.css">-->
-    </head>
-<body>
-     <!--formulario de registro-->
+<!--formulario de registro-->
     <div class="container col-lg-7 mt-5">
         <form class="row g-3">
             <div class="col-12 d-flex justify-content-center">
-                <h1class="h1">REGISTRO</h1>
+                <h1 class="h1">REGISTRO</h1>
             </div>
             <div class="col-md-6 form-floating mb-3">
               <input type="text" class="form-control" id="inputName" placeholder="Nombres">
@@ -46,7 +33,8 @@
               <label for="inputCell" class="text-secondary">Celular</label>
           </div>
           <div class="col-md-6 form-floating mb-3">
-              <select class="form-select"  id="SelecRol" onchange="Speciality()">
+              <select class="form-select"  id="SelecRol" >
+                <!--onchange="Speciality()"-->
                   <option value="0" selected></option>
                   <option value="1">Administrador</option>
                   <option value="2">Usuario</option>
@@ -61,7 +49,8 @@
         </div>
             <div class="col-12">
                 <button type="submit" class="btn btn-primary">
-                    <a class="text-decoration-none text-white" onclick="Registrar()" href="#">Crear</a>
+                    <a class="text-decoration-none text-white" href="#">Crear</a>
+                    <!--onclick="Registrar()" -->
                 </button>
                 <button type="submit" class="btn btn-primary">
                     <a class="text-decoration-none text-white" href="admin.html">Volver</a>
@@ -69,9 +58,3 @@
             </div>
           </form>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="../js/InicioVerify.js"></script>
-    <script src="../Js/RegistroAdmin.js"></script>
-
-</body>
-</html>

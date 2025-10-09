@@ -1,49 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DS Workout Advisor</title>
-    <link rel="icon" href="../img/e-trainer.ico">
-    <!--bootstrap-->
-    <link rel="stylesheet" href="../bootstrap-5.3.3-dist/css/bootstrap.css">
-    <!--css-->
-    <link rel="stylesheet" href="../css/Fijos.css">
-    <!--<link rel="stylesheet" href="css/Fijos.css">
-    <link rel="stylesheet" href="../css/IndexCss.css">-->
-</head>
-<body onload="CargarInfo()">
-     <!--inicio de sesion del administrador,-->
-     <nav class="navbar navbar-expand-sm px-4">
-      <div class="container-fluid">
-        <!--logo-->
-        <img class="navbar-branad" src="../img/e-trainer.ico" alt="DS LOGO" widht="60px" height="60px">
-        <a class="h5 text-decoration-none text-white" href="#" id="NombreUser">Bienvenido(a) </a>
-          <!--boton para abrir el menu-->
-        <button class="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target="#menu-navbar" aria-controls="menu-navbar" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-          <!--menu-->
-        <div class="collapse navbar-collapse justify-content-end" id="menu-navbar">
-          <ul class="navbar-nav">
-              <li class="nav-item">
-                  <a class="nav-link fw-bold" href="profesional.html">INICIO</a></li>
-              <li class="nav-item">
-                  <a class="nav-link fw-bold active" href="FisicUsers.html">USUARIOS</a></li>
-              <li class="nav-item">
-                  <a class="nav-link fw-bold" href="crearRutina.html">RUTINAS</a></li>
-                  <li class="nav-item">
-                    <a class="nav-link fw-bold" href="crearEjercicio.html">EJERCICIOS</a></li>
-              <li class="nav-item">
-                  <a class="nav-link fw-bold" href="" onclick="cerrarSesion()">CERRAR SESION</a></li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-      <div class="container col-sm-10 col-lg-8 col-md-10  my-5" >
+<div class="container col-sm-10 col-lg-8 col-md-10  my-5" >
         <div>
             <div>
-              <button class="btn"><a class="text-decoration-none text-dark" onclick="volver()"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-arrow-bar-left" viewBox="0 0 16 16">
+              <button class="btn"><a class="text-decoration-none text-dark" ><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-arrow-bar-left" viewBox="0 0 16 16">
+                <!--onclick="volver()"-->
                   <path fill-rule="evenodd" d="M12.5 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5M10 8a.5.5 0 0 1-.5.5H3.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L3.707 7.5H9.5a.5.5 0 0 1 .5.5"/>
                 </svg></a>
               </button>
@@ -100,7 +59,7 @@
         <!--Diagnostico del cliente-->
         <div>
             <div class="justify-content-center">
-              <h4 class="h4 fw-bold text-center">Diagnostico</h3>
+              <h4 class="h4 fw-bold text-center">Diagnostico</h4>
             </div>
             <div class="form-floating mb-3 col-lg-12">
               <textarea class="form-control" placeholder="Leave a comment here" id="diagnostico" style="height: 100px" resize="false"></textarea>
@@ -171,7 +130,8 @@
                   <div class="col-md-6 mt-4">
                     <input type="text" readonly id="predic" class="form-control">
                     <div class="col-md-6 my-1">
-                      <button type="button" class="btn btn-success my-2" onclick="predecir()">Predecir</button>
+                      <button type="button" class="btn btn-success my-2" >Predecir</button>
+                      <!--onclick="predecir()"-->
                     </div>
                   </div>
                   <div class="col-lg-6 col-md-6">
@@ -182,10 +142,12 @@
               
               <div class="col-lg-12 mt-2">
                 <button class="btn btn-primary me-2 mb-2">
-                    <a data-bs-toggle="modal" data-bs-target="#Asignar" onclick="CargarRutinas()" class="text-decoration-none text-white">asignar Rutina</a>
+                    <a data-bs-toggle="modal" data-bs-target="#Asignar" class="text-decoration-none text-white">asignar Rutina</a>
+                    <!-- onclick="CargarRutinas()"-->
                 </button>
                 <button  class="btn btn-success me-2 mb-2">
-                    <a href="#" onclick="EnvioDiagnostico()" class="text-decoration-none text-white">Enviar diagnostico</a>
+                    <a href="#"  class="text-decoration-none text-white">Enviar diagnostico</a>
+                    <!--onclick="EnvioDiagnostico()"-->
                 </button>
                 <button class="btn btn-info me-2">
                   <a data-bs-toggle="modal" data-bs-target="#rutinaPersonalizada" class="text-decoration-none text-white">Crear Rutina Personalizada</a>
@@ -227,8 +189,10 @@
                   <h1 class="text-center my-1 ms-4">Nueva rutina</h1>
                 </div>
                 <div>
-                  <a onclick="FiltroPredic()" class="btn btn-success my-2">Recomendacion</a>
-                  <a onclick="CargarEjercicios()" class="btn btn-secondary">Quitar Recomendacion</a>
+                  <a  class="btn btn-success my-2">Recomendacion</a>
+                  <!--onclick="FiltroPredic()"-->
+                  <a  class="btn btn-secondary">Quitar Recomendacion</a>
+                  <!--onclick="CargarEjercicios()"-->
                 </div>
               </div>
               <div class="modal-body">
@@ -261,8 +225,10 @@
                                     </div>
                                                                     
                                   <div class="mb-2">
-                                      <button type="button" class="btn btn-dark" onclick="Cancelar()">Cancelar</button>
-                                      <button type="button" data-bs-dismiss="modal" class="btn btn-success" onclick="Registrar_rutina()">Agregar</button>
+                                      <button type="button" class="btn btn-dark" >Cancelar</button>
+                                      <!--onclick="Cancelar()"-->
+                                      <button type="button" data-bs-dismiss="modal" class="btn btn-success" >Agregar</button>
+                                      <!--onclick="Registrar_rutina()"-->
                                   </div>
                             </div>
                             <!--ejercicios--> 
@@ -331,152 +297,3 @@
             </div>
       </div>
     </div>
-    <!--pie de pagina-->
-    <div class="container-fluid">
-      <div class="row p-5 pb-1 bg-dark text-white">
-        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-          <p class="h5 mb-3">Autores</p>
-          <div class="mb-2">
-            <p class="text-secondary">David José Carrillo Quevedo</p>
-          </div>
-          <div class="mb-2">
-            <p class="text-secondary">Stiven Alexander Chico Pelaez</p>
-          </div>
-        </div> 
-        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-          <p class="h5 mb-3">contactos</p>
-          <div class="mb-2">
-            <p class="text-secondary">Telefono +57 ******</p>
-          </div>
-          <div class="mb-2">
-            <p class="text-secondary">whatsApp +57 ******</p>
-          </div>
-        </div> 
-        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-          <p class="h5 mb-3">siguenos</p>
-          <a class="text-decoration-none" href="#">
-            <img src="../img/facebook.ico" alt="facebook">
-        </a>
-        <a class="text-decoration-none" href="#">
-            <img src="../img/instagram.ico" alt="Instagran">
-        </a>
-        <a class="text-decoration-none" href="#">
-            <img src="../img/Twiter.ico" alt="Twiter">
-        </a>
-        <a class="text-decoration-none" href="#">
-            <img src="../img/tik-tok.ico" alt="Tiktok">
-        </a>
-        </div> 
-        <div class="col-12 pt-3">
-          <p class="text-center">Copyright © 2023 DS Workout Advisor. Todos los derechos reservados.</p>
-        </div>
-        <div class="col-12">
-          <p class="text-center"><a class="text-decoration-none text-white" href="#"> Terminos y condiciones</a></p>
-        </div>
-      </div>
-    </div>
-      <script
-  src="https://code.jquery.com/jquery-3.7.1.min.js"
-  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
-  crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.3/css/dataTables.dataTables.css" />
-    <script src="https://cdn.datatables.net/2.1.3/js/dataTables.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-      <script src="../Js/InicioVerify.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-      <script src="../Js/Evaluar.js"></script>
-</body>
-</html>
- <!--
-            <div class="justify-content-center">
-              <h4 class="h4 fw-bold text-center">Diagnostico</h3>
-          </div>
-          <div class="form-floating mb-3 col-lg-12">
-
-              <textarea class="form-control" placeholder="Leave a comment here" id="diagnostico" style="height: 100px" resize="false"></textarea>
-              <label for="diagnostico">Escriba aqui su diagnostico</label>
-            
-          </div>
-          <div>
-            <div class="row">
-              <div class="col-sm-12 col-md-6 mb-2">
-                <label for="inputTypePredic">Tipo de ejercicios</label>
-                <select id="inputTypePredic" class="form-select">
-                  <option value="Strength" selected>Fuerza</option>
-                  <option value="Stretching">Estiramiento</option>
-                  <option value="Plyometrics">Pilometría</option>
-                  <option value="Powerlifting">Levantamiento de pesas</option>
-                  <option value="Cardio">Cardio</option>
-                </select>
-              </div>
-              <div class="col-sm-12 col-md-6 mb-2">
-                <label for="inputBodypartPredic">Parte del cuerpo</label>
-                <select id="inputBodypartPredic" class="form-select">
-                  <option value="Abdominals" selected>Abdomen</option>
-                  <option value="Adductors">Adductores</option>
-                  <option value="Forearms">Antebrazos</option>
-                  <option value="Biceps">Bíceps</option>
-                  <option value="Neck">Cuello</option>
-                  <option value="Quadriceps">Cuádriceps</option>
-                  <option value="Lats">Dorsales</option>
-                  <option value="Lower Back">Espalda baja</option>
-                  <option value="Middle Back">Espalda media</option>
-                  <option value="Glutes">Glúteos</option>
-                  <option value="Shoulders">Hombros</option>
-                  <option value="Hamstrings">Isquiotibiales</option>
-                  <option value="Chest">Pecho</option>
-                  <option value="Calves">Pantorrillas</option>
-                  <option value="Traps">Trapecios</option>
-                  <option value="Triceps">Tríceps</option>
-                </select>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-12 col-md-6 mb-2">
-                <label for="inputLevelPredic">Nivel del cliente</label>
-                <select id="inputLevelPredic" class="form-select">
-                  <option value="Beginner" selected>Principiante</option>
-                  <option value="Intermediate">Intermedio</option>
-                  <option value="Expert">Experto</option>
-                </select>
-              </div>
-              <div class="col-sm-12 col-md-6">
-                <label for="inputEquipamiento"> Equipamiento</label>
-                <select id="inputEquipamiento" class="form-select">
-                  <option value="Body Only" selected>Ninguno</option>
-                  <option value="Bands">Bandas</option>
-                  <option value="Barbell">Pesas con barrra</option>
-                  <option value="Cable">Cuerda para saltar</option>
-                  <option value="Dumbbell">Pesas</option>
-                  <option value="E-Z Curl Bar">Barra E-Z Curl</option>
-                  <option value="Exercise Ball">Balón de ejercicios</option>
-                  <option value="Foam Roll">Rodillo de espuma</option>
-                  <option value="Kettlebells">Pesas rusas</option>
-                  <option value="Machine">Máquina</option>
-                  <option value="Medicine Ball">Balón medicinal</option>
-                  <option value="Other">Otro</option>
-                </select>
-              </div>
-              <div class="col-sm-12 col-md-6">
-                <label for="inputfr_train" class="form-label">Frecuencia con la que realiza actividad fisica</label>
-                <input type="text" id="inputfr_train" class="form-control"readonly>
-              </div>
-              <div class="col-sm-12 col-md-6">
-                  <label for="inputDuration_sesion" class="form-label">Duracion de la sesion de ejerccio tipica</label>
-                  <input type="text" class="form-control" id="inputDuration_sesion"readonly>
-              </div>
-              <div class="col-sm-12 col-md-6">
-                <label for="inputObjetivo" class="form-label">Objetivo</label>
-                <input type="text" class="form-control" id="inputObjetivo"readonly>
-              </div>
-              <div class="col-sm-12 col-md-6">
-                <label for="inputEquipamiento" class="form-label">Equipamiento</label>
-                <textarea name="" id="inputEquipamiento" class="form-control" readonly></textarea>
-              </div>
-              <div class="col-md-12">
-                <label for="inputRestricción_alimenticia" class="form-label">Restricciones alimenticias</label>
-                <input type="text" class="form-control" id="inputRestricción_alimenticia"readonly>
-              </div>
-          </form>
-      </div>-->
