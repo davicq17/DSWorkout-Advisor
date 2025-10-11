@@ -14,16 +14,16 @@
 
     <div class="col-md-4">
       <p class="h5 mb-3">Síguenos</p>
-      <a href="#"><img src="/img/facebook.ico" alt="Facebook" /></a>
-      <a href="#"><img src="/img/instagram.ico" alt="Instagram" /></a>
-      <a href="#"><img src="/img/Twiter.ico" alt="Twitter" /></a>
-      <a href="#"><img src="/img/tik-tok.ico" alt="TikTok" /></a>
+      <a ><img src="/img/facebook.ico" alt="Facebook" /></a>
+      <a ><img src="/img/instagram.ico" alt="Instagram" /></a>
+      <a ><img src="/img/Twiter.ico" alt="Twitter" /></a>
+      <a ><img src="/img/tik-tok.ico" alt="TikTok" /></a>
     </div>
 
     <div class="col-12 pt-3">
       <p class="text-center">Copyright © 2023 DS Workout Advisor. Todos los derechos reservados.</p>
       <p class="text-center">
-        <a class="text-decoration-none text-white" href="#">Términos y condiciones</a>
+        <a class="text-decoration-none text-white" >Términos y condiciones</a>
       </p>
     </div>
   </div>

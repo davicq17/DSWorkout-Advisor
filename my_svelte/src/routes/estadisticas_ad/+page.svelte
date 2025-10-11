@@ -265,64 +265,59 @@ const GenerarReporte=()=>{
     alert('Reporte generado correctamente');
 }
 </script>
-<div class="container col-lg-9 col-md-10 col-sm-12 ">
-        <div class="row ">
-          <div class=" mt-3 col-12 rounded">
-            <div class="text-center">
-              <h1 class="text-dark">Estadisticas</h1>
-            </div>
-            <button class="btn btn-primary mb-1" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-newspaper" viewBox="0 0 16 16">
+<div class="container col-lg-9 col-md-10 col-sm-12 "><!--principal-->
+  <div class="row "><!--div1-->
+    <div class=" mt-3 col-12 rounded"><!--div1.1-->
+      <div class="text-center">
+        <h1 class="text-dark">Estadisticas</h1>
+      </div>
+          <button class="btn btn-primary mb-1" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-newspaper" viewBox="0 0 16 16">
                 <!--onclick="descargarpdf()"-->
               <path d="M0 2.5A1.5 1.5 0 0 1 1.5 1h11A1.5 1.5 0 0 1 14 2.5v10.528c0 .3-.05.654-.238.972h.738a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 1 1 0v9a1.5 1.5 0 0 1-1.5 1.5H1.497A1.497 1.497 0 0 1 0 13.5zM12 14c.37 0 .654-.211.853-.441.092-.106.147-.279.147-.531V2.5a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0-.5.5v11c0 .278.223.5.497.5z"/>
               <path d="M2 3h10v2H2zm0 3h4v3H2zm0 4h4v1H2zm0 2h4v1H2zm5-6h2v1H7zm3 0h2v1h-2zM7 8h2v1H7zm3 0h2v1h-2zm-3 2h2v1H7zm3 0h2v1h-2zm-3 2h2v1H7zm3 0h2v1h-2z"/>
-            </svg> Informe </button>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-12 d-flex  justify-content-between">
-            <h5 id="Activos" class="p-1 col-lg-4 col-md-6  border border-primary rounded my-4 me-4">Total de usuarios Activos: </h5>
-            <h5 id="DiagnosticosTt" class="p-1 col-lg-4  col-md-6  border border-primary rounded my-4 ">Total de diagnosticos realizados: </h5>
-          </div>
-          <div class="col-12 d-flex  justify-content-between">
-            <h5 id="Ejercicios" class="p-1 col-lg-4 col-md-6  border border-primary rounded my-4">Total de ejercicios registrados: </h5>
-            <h5 id="Rutinas" class="p-1 col-lg-4 col-md-6  border border-primary rounded my-4">Total de rutinas creadas: </h5>
-          </div>
-        </div>
-        <div class="row mb-5 mt-5">
-        <div class="col-lg-4 col-md-6 col-sm-12">
-          <canvas id="Grafica1">
+            </svg> Informe 
+          </button>
+    </div><!--div1-->
+  </div><!--div1-->
+  <div class="row"><!--div2-->
+    <div class="col-12 d-flex  justify-content-between">
+      <h5 id="Activos" class="p-1 col-lg-4 col-md-6  border border-primary rounded my-4 me-4">Total de usuarios Activos: </h5>
+      <h5 id="DiagnosticosTt" class="p-1 col-lg-4  col-md-6  border border-primary rounded my-4 ">Total de diagnosticos realizados: </h5>
+    </div>
+    <div class="col-12 d-flex  justify-content-between">
+      <h5 id="Ejercicios" class="p-1 col-lg-4 col-md-6  border border-primary rounded my-4">Total de ejercicios registrados: </h5>
+      <h5 id="Rutinas" class="p-1 col-lg-4 col-md-6  border border-primary rounded my-4">Total de rutinas creadas: </h5>
+    </div>
+  </div><!--div2-->
+  <div class="row mb-5 mt-5"><!--div3-->
+    <div class="col-lg-4 col-md-6 col-sm-12">
+      <canvas id="Grafica1">
+      </canvas>
+    </div>
 
-          </canvas>
-        </div>
-        <div class="col-lg-4 col-md-6 col-sm-12">
-          <canvas id="Grafica2">
+    <div class="col-lg-4 col-md-6 col-sm-12">
+      <canvas id="Grafica2">
+      </canvas>
+    </div>
 
-          </canvas>
-        </div>
+    <div class="col-lg-4 col-md-6 col-sm-12">
+      <canvas id="Grafica3">
+      </canvas>
+    </div>
       
-        <div class="col-lg-4 col-md-6 col-sm-12">
-          <canvas id="Grafica3">
-
-          </canvas>
-        </div>
+    <div class="col-lg-4 col-md-6 col-sm-12">
+      <canvas id="Grafica4">
+      </canvas>
+    </div>
       
-        <div class="col-lg-4 col-md-6 col-sm-12">
-          <canvas id="Grafica4">
-
-          </canvas>
-        </div>
-      
-      
-        <div class="col-lg-4 col-md-6 col-sm-12">
-          <canvas id="Grafica5">
-
-          </canvas>
-        </div>
-        <div class="col-lg-4 col-md-6 col-sm-12">
-          <canvas id="Grafica6">
-
-          </canvas>
-        </div>
+    <div class="col-lg-4 col-md-6 col-sm-12">
+      <canvas id="Grafica5">
+      </canvas>
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-12">
+      <canvas id="Grafica6">
+      </canvas>
+    </div>
        <!-- <a onclick="GenerarReporte()" class="btn btn-primary">Generar reporte</a>-->
-      </div> 
-      </div>
+  </div><!--div3-->
+</div><!--principal-->

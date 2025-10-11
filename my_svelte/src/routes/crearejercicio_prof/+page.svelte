@@ -1,7 +1,7 @@
 <script>
     mensj="";
 // pido los datos del formulario
-const Registrar = () =>{
+ const Registrar = () =>{
     nombreI=document.getElementById("inputNombre").value;
     guideI=document.getElementById("inputGuia").value;
     tipoI=document.getElementById("inputTipo").value;
@@ -44,17 +44,17 @@ const Registrar = () =>{
         // si hay campos vacios muestra una alerta
         alert("Verifique que no existan campos vacios!");
     }
-};
+ };
 
 // workoutTable.js
 
 //const tabla= document.querySelector('#tablaWorkout tbody');
 
-let tabla = new DataTable('#tablaWorkout', {
+ let tabla = new DataTable('#tablaWorkout', {
     paging:false,
     scrollY:400
-});
-const Init_Data =() =>{
+ });
+ const Init_Data =() =>{
     axios.get('http://127.0.0.1:5000/ejercicioTabla')
     .then(function(response){0
         botones=`<buttom type="buttom" class="btn btn-warning ms-3 btn-sm" data-bs-toggle="modal" data-bs-target="#Editar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -83,11 +83,10 @@ const Init_Data =() =>{
 Init_Data();
 </script>
 <main>
-    <div class="container col-lg-10 col-md-10 col-sm-12">
+    <div class="container col-lg-10 col-md-10 col-sm-12"><!--div1-->
         <h3 class="mt-3">EJERCICIOS</h3>
         <a class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#AddEjercicio">Agregar ejercicio</a>                
-
-        <div class="table-responsive">
+        <div class="table-responsive"><!--div1.1-->
             <table id="tablaWorkout" class=" table text-center table-bordered table-striped table-hover table-responsive table-responsive-sm table-responsive-lg table-responsive-md table-responsive-xl" style="width:100%">
                 <thead>
                     <tr>
@@ -106,18 +105,17 @@ Init_Data();
                 <tbody class="text-center">
                 </tbody>
             </table>
-        </div>
-    </div>
-                     
+        </div><!--div.1.1-->
+    </div><!--div1-->               
                     <!--Modal para creacion de ejercicios-->
-    <div class="modal fade" tabindex="-1" id="AddEjercicio" >
-        <div class="modal-dialog" >
-            <div class="modal-content">
-                <div class="modal-header">
+    <div class="modal fade" tabindex="-1" id="AddEjercicio" ><!--div2-->
+        <div class="modal-dialog" ><!--div2.1-->
+            <div class="modal-content"><!--div2.2-->
+                <div class="modal-header"><!--div2.3-->
                     <h1 class="text-center my-3">Nuevo ejercicio</h1>
-                </div>
-                    <div class="modal-body">
-                        <div class="row">
+                </div><!--div2.3-->
+                    <div class="modal-body"><!--div2.4-->
+                        <div class="row"><!--div2.4.1-->
                             <div class="mb-2 col-sm-12 col-xs-12 col-md-6 col-lg-6">
                                 <label for="inputNombre" class="form-label"><b>Nombre</b></label>
                                 <input type="text" class="form-control" id="inputNombre" required>
@@ -126,8 +124,8 @@ Init_Data();
                                 <label for="inputGuia" class="form-label"><b>Guia</b></label>
                                 <textarea name="" id="inputGuia" class="form-control"></textarea required>                               
                             </div>
-                        </div>
-                        <div class="row">
+                        </div><!--div2.4.1-->
+                        <div class="row"><!--div2.4.2-->
                             <div class="mb-2 col-sm-12 col-xs-12 col-md-6 col-lg-6">
                                 <label for="inputTipo"><b>Tipo</b></label>
                                 <select id="inputTipo" class="form-select">
@@ -142,8 +140,8 @@ Init_Data();
                                 <label for="inputEquipo" class="form-label"><b>Equipo</b></label>
                                 <input type="text" class="form-control" id="inputEquipo" required>
                             </div>
-                        </div>
-                        <div class="row">
+                        </div><!--div2.4.2-->
+                        <div class="row"><!--div2.4.3-->
                             <div class="mb-2 col-sm-12 col-xs-12 col-md-6 col-lg-6">
                                 <label for="inputNivel"><b>Nivel</b></label>
                                 <select id="inputNivel" class="form-select">
@@ -156,8 +154,8 @@ Init_Data();
                                 <label for="inputRepeticion" class="form-label"><b>Repeticiones</b></label>
                                  <input type="number" class="form-control" id="inputRepeticion" required>
                             </div>
-                        </div>
-                        <div class="row">
+                        </div><!--div2.4.3-->
+                        <div class="row"><!--2.4.4-->
                             <div class="mb-2 col-sm-12 col-xs-12 col-md-6 col-lg-6">
                                 <label for="inputSeries" class="form-label"><b>Series</b></label>
                                 <input type="number" class="form-control" id="inputSeries" required>
@@ -166,16 +164,15 @@ Init_Data();
                                 <label for="inputDuracion" class="form-label"><b>Duración (min)</b></label>
                                 <input type="number" class="form-control" id="inputDuracion" placeholder="00" required>
                             </div>      
-                        </div> 
-                 </div>
-                <div class="modal-footer d-flex justify-content-around">
+                        </div><!--div2.4.4-->
+                 </div><!--div2.4-->
+                 <div class="modal-footer d-flex justify-content-around"><!--div2.5-->
                     <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancelar</button>
                     <button type="button" class="btn btn-success" >Agregar</button>
                     <!--onclick="Registrar()"-->
-                </div>
-                
-            </div>
-        </div>
-    </div>
+                 </div><!--div2.5-->
+            </div><!--div2.2-->
+        </div><!--div2.1-->
+    </div><!--div2-->
 </main>
                  
