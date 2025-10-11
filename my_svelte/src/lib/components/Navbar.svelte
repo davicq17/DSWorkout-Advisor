@@ -1,7 +1,6 @@
 <script lang="ts">
-  let rol = $state(0);
-	const increment = ()=>{if (rol < 3){rol++}};
-	const decrement = ()=>{if (rol > 0){rol--}};
+  const {data}=$props(); // el rol y el token vienen del servidor
+  let {rol,token}=data;
 	function paths(rol: number) {
 		switch(rol){
 			case 0: 
@@ -35,12 +34,24 @@
 				return[]
 		}	
 	}
+	
 	const paginas = $derived(paths(rol));
+
+	const cerranSesion =()=>{
+		localStorage.removeItem("token");
+		localStorage.removeItem("rol");
+		window.location.href="/";
+	};
 </script>
 <nav class="navbar navbar-expand-sm">
-        <div class="container-fluid">
-          <!--logo-->
+  <div class="container-fluid">
+    <!--logo-->
           <img class="navbar-branad" src="/img/e-trainer.ico" alt="DS LOGO" widht="60px" height="60px">
+			<h1 class="h5 text-decoration-none text-white">
+			{#if data.user}
+				Bienvenido(a) {data.user.name} 
+			{/if}
+		  	</h1>
             <!--boton para abrir el menu-->
           <button class="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target="#menu-navbar" aria-controls="menu-navbar" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -53,13 +64,12 @@
                   <a class="nav-link fw-bold" href={pagina.url}>{pagina.name}</a>
                 </li>
               {/each}
+				{#if token}
+					<li class="nav-item">
+				  		<button class="nav-link fw-bold" onclick={cerranSesion}>CERRAR SESIÓN</button>
+                	</li>
+			  	{/if}
             </ul>
           </div>
-          <!--prueba del navbar reactivo, el rol lo debe tomar de una petición en la api
-          por ahora se hace la prueba con los botones 
-          0) visitante 1) admin 2) cliente 3) prof -->
-          <h1>{rol}</h1>
-          <button onclick={increment}>rol siguiente</button>
-          <button onclick={decrement}>rol anterior</button>
-        </div>
-      </nav>
+  </div>
+</nav>

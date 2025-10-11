@@ -83,37 +83,37 @@
             <h1 class="text-center my-3">Editar un registro</h1>
           </div><!--div5.1-->
         <div class="modal-body"><!--div7-->
-          <div class="input-group">
+          <div class="input-group"><!--div7.1-->
           <div class="col-md-6 pe-2 mb-3">
             <input type="text" class="form-control pe-2" id="inputName" placeholder="Nombres">
           </div>
           <div class="col-md-6 mb-3">
               <input type="text" class="form-control" id="inputLastName" placeholder="Apellidos">
           </div>
-        </div>
-        <div class="input-group">
+        </div><!--div7.1-->
+        <div class="input-group"><!--div7.2-->
           <div class="col-md-6 pe-2 mb-3">
               <input type="text" class="form-control pe-2" id="inputUsername" placeholder="Usuario">
           </div>
           <div class="col-md-6 mb-3">
               <input type="email" class="form-control" id="inputEmail" placeholder="Correo">
           </div>
-        </div>
-        <div class="input-group">
+        </div><!--div7.2-->
+        <div class="input-group"><!--div7.3-->
           <div class="col-md-6 mb-3 pe-2">
               <input type="text" class="form-control pe-2" id="inputPassword" placeholder="Ingrese su contraseña" maxlength="12" minlength="6">
           </div>
           <div class="col-md-6 mb-3">
               <input type="number" class="form-control" id="inputCell" placeholder="Ingrese su contraseña" maxlength="10" minlength="10">
           </div>
-        </div>
-        <div class="col-6">
+        </div><!--div7.3-->
+        <div class="col-6"><!--div7.4-->
           <select class="form-select"  id="SelecRol">
             <option value="1">Administrador</option>
             <option value="2">Usuario</option>
             <option value="3">Profesional</option>
         </select>
-        </div>
+        </div><!--div7.4-->
         </div><!--div7-->
         <div class="modal-footer d-flex justify-content-around">
           <a class="btn btn-primary ms-5" data-bs-dismiss="modal" >Actualizar</a>

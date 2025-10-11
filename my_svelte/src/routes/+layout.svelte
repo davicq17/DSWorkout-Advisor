@@ -4,10 +4,9 @@
 	//se importan el menu o navbar y el pie de pagina para todas las paginas
 	import Navbar from "$lib/components/Navbar.svelte";
 	import Footer from "$lib/components/Footer.svelte";
-
-	let { children } = $props();
+	let { children,data } = $props();  // traemos la data de +layout.server.ts
 </script>
 
-<Navbar/>
+<Navbar {data}/>
 {@render children?.()}
 <Footer/>
