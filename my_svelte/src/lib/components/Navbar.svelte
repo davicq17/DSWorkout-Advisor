@@ -46,7 +46,7 @@
 <nav class="navbar navbar-expand-sm">
   <div class="container-fluid">
     <!--logo-->
-          <img class="navbar-branad" src="/img/e-trainer.ico" alt="DS LOGO" widht="60px" height="60px">
+          <img class="navbar-branad" src="/img/e-trainer.ico" alt="DS LOGO" width="60px" height="60px">
 			<h1 class="h5 text-decoration-none text-white">
 			{#if data.user}
 				Bienvenido(a) {data.user.name} 
