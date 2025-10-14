@@ -13,3 +13,6 @@ dependencies = [
     "jwt>=1.4.0",
     "pandas>=2.3.3",
 ]
+
+[database]
+DATABASE_URL = "postgres://user:password@pg-XXXXXX.aivencloud.com:12345/defaultdb?sslmode=require"
