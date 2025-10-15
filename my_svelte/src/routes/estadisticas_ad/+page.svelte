@@ -1,278 +1,198 @@
-<script>
-  const grafica1 = document.getElementById('Grafica1').getContext('2d');
-const grafica2=document.getElementById("Grafica2");
-const grafica3=document.getElementById("Grafica3");
-const grafica4=document.getElementById("Grafica4");
-const grafica5=document.getElementById("Grafica5");
+<script lang="ts">
+  import axios from "axios";
+  import { onMount } from "svelte";
+  import { Chart, registerables } from "chart.js";
 
-const Init_Graficas=()=>{
-    //Peticion de datos generales
-    axios({
-        method: 'GET',
-        url: 'http://127.0.0.1:5000/GetGeneral',
-    }).then(function(response){
-        document.getElementById("Activos").innerHTML+=response.data.totalUsuarios;
-        document.getElementById("DiagnosticosTt").innerHTML+=response.data.diagnosticosTotales;
-        document.getElementById("Ejercicios").innerHTML+=response.data.ejercicios;
-        document.getElementById("Rutinas").innerHTML+=response.data.rutinas;
-    }).catch(err => console.log('Error: ', err))
+  Chart.register(...registerables);
+  // variables para de datos generales
+  let totalUsuarios =$state(0);
+  let diagnosticosTotales = $state(0);
+  let ejercicios = $state(0);
+  let rutinas = $state(0);
 
+  // variables de graficas 
+  let grafica1: HTMLCanvasElement;
+  let grafica2: HTMLCanvasElement;
+  let grafica3: HTMLCanvasElement;
+  let grafica4: HTMLCanvasElement;
+  let grafica5: HTMLCanvasElement;
+  let grafica6: HTMLCanvasElement;
 
-    //peticion para grafica 1 sobre el IMC
-axios({
-    method: 'GET',
-    url: 'http://127.0.0.1:5000/GetGrafica1',
-    }).then(function(response){
-        let arreglorecibe=response.data;
-        counts=[0,0,0,0]
-        for(i=0;i<arreglorecibe.length;i++){
-            let weight=parseFloat(arreglorecibe[i].weight);
-            let height=parseFloat(arreglorecibe[i].height);
-            let IMC=weight/(height*height);
-            if(IMC<18.5){
-                counts[0]++;
-            }else if(IMC>=18.5 && IMC<24.9){
-                counts[1]++;
-            } else if(IMC>=25 && IMC<30){
-                counts[2]++;
-            } else if(IMC>=30){
-                counts[3]++;
+  onMount(()=>{
+
+  });
+
+  // Funcion general 
+  const Init_Graficas = async ()=>{
+    try{
+      // peticion de datos generales
+      const general = await axios.get("http://127.0.0.1:5000/GetGeneral");
+      totalUsuarios = general.data.totalUsuarios;
+      diagnosticosTotales = general.data.diagnosticosTotales;
+      ejercicios = general.data.ejercicios;
+      rutinas = general.data.rutinas;
+
+      // Grafica 1 del IMC
+      const g1 = await axios.get("http://127.0.0.1:5000/GetGrafica1");
+      const counts = [0,0,0,0];
+      for(const p of g1.data ){
+        const IMC= parseFloat(p.weight)/ (parseFloat(p.height)**2);
+        if(IMC < 18.5)counts[0]++;
+        else if (IMC < 24.9) counts[1]++;
+        else if (IMC < 30) counts[2]++;
+        else counts[3]++;
+      }
+      new Chart(grafica1,{
+        type:"pie",
+        data:{
+          labels:["Bajo peso","Peso normal","Sobrepeso","Obesidad"],
+          datasets:[
+            {
+              label:"IMC",
+              data:counts,
+              backgroundColor:[
+                getRandomColor(0.3),
+                getRandomColor(0.3),
+                getRandomColor(0.3),
+                getRandomColor(0.3)
+              ]
             }
+          ]
         }
+      });
 
-
-
-    var chart1=new Chart(grafica1, {
-        type:'pie',
-        data:{
-            labels: [ 'Bajo peso', 'Peso normal', 'Sobrepeso', 'Obesidad'],
-            datasets:[{
-                label:"Grafica de IMC",
-                data:counts,
-                backgroundColor:[getRandomColor(0.3),
-                                    getRandomColor(0.3),
-                                    getRandomColor(0.3),
-                                    getRandomColor(0.3)],
-            }]
-        }
-    })
-    }).catch(err => console.log('Error: ', err))
-
-
-    //carga del grafico 2 con get (grafica sobre el genero)
-    axios({
-        method: 'GET',
-        url: 'http://127.0.0.1:5000/GetGrafica2',
-    }).then(function(response){
-        let M=response.data[1].total;
-        let F=response.data[0].total;
-    var Chart2=new Chart(grafica2, {
-        type:'pie',
-        data:{
-            labels: ["Hombres", "Mujeres"],
-            datasets:[{
-                label:"Grafica de Genero",
-                data:[M,F],
-                backgroundColor:[getRandomColor(0.3),
-                    getRandomColor(0.3)]
-            }],
-        }
-    });
-    }).catch(err => console.log('Error: ', err))
-
-    //carga de grafica 3 con un get(grafica sobre objetivos) 
-    axios({
-        method:'GET',
-        url:'http://127.0.0.1:5000/GetGrafica3'
-    }).then(function(response){
-        arreglorecibe=response.data; 
-    var chart3 = new Chart(grafica3, {
-        type:'bar',
-        data:{
-            labels: [arreglorecibe[0].goal,arreglorecibe[1].goal ,arreglorecibe[2].goal],
-            datasets:[{
-                label:"Grafica Objetivos",
-                data:[arreglorecibe[0].total,arreglorecibe[1].total,arreglorecibe[2].total],
-                backgroundColor:[getRandomColor(0.3)],
-                borderWidth:1
-            }]
-        },
-        options:{
-            scales:{
-                y:{
-                    beginAtZero:true
-                }
-            }
-        }
-    })
-}).catch(err => console.log('Error: ', err))
-
-
-//Peticon a la api de datos para la grafica 4 de roles
-axios({
-    method: 'GET',
-    url: 'http://127.0.0.1:5000/GetGrafica4',
-}).then(function(response){
-    arreglorecibe=response.data;
-    labels=[]
-    datos=[]
-    for(i=0;i<arreglorecibe.length;i++){
-    if(arreglorecibe[i].rol==1){
-        labels.push('Administrador');
-    }else if(arreglorecibe[i].rol==2){
-        labels.push('Usuario');
-    }else if(arreglorecibe[i].rol==3){
-        labels.push('Profesional');
-    }
-    datos.push(arreglorecibe[i].total);
-    }
-
-    var char4=new Chart(Grafica4,{
-        type:'bar',
-        data:{
-            labels:labels,
-            datasets:[{
-                label:"Grafica de Roles",
-                data:datos,
-                backgroundColor:[getRandomColor(0.3)],
-                borderWidth:1
-            }]
-        },
-        options:{
-            scales:{
-                y:{
-                    beginAtZero:true
-                }
-            }
-        }
-    })
-}).catch(err => console.log('Error: ', err))
-
-//Grafica 5 sobre rango de edad
-axios.get('http://127.0.0.1:5000/getGrafica5')
-
-      .then(function(response) {
-        //recibimos el arreglo de datos
-        Arreglo=response.data
-        //console.log(Arreglo);
-        nombres=[];
-        datos=[];
-        //repetimos para cada rango de edad,segun su existencia aparecera la clasificacion
-        for(i in Arreglo){
-            intervalo=Arreglo[i]
-            nombres.push(intervalo[0]);
-            datos.push(intervalo[1]);
-        }
-        //console.log(nombres);
-        //console.log(datos);
-        // Rango de edades
-        //const labels = ['0-17', '18-25', '26-35', '36-45', '46-55', '56-65', '66+'];
-        //console.log(response.data)
-        
-        const ageChart = new Chart(grafica5, {
-          type: 'bar',
+      // Grafica 2
+      const g2 = await axios.get("http://127.0.0.1:5000/GetGrafica2");
+        new Chart(grafica2, {
+          type: "pie",
           data: {
-            labels: nombres, // etiquetas de los rangos de edad
-            datasets: [{
-              label: 'Rangos de edad',
-              data:datos, // datos de la cantidad de personas en cada rango de edad
-              backgroundColor: getRandomColor(0.3),
-              borderWidth: 1
-            }]
-          },
-          options: {
-            scales: {
-              y: {
-                beginAtZero: true
+            labels: ["Hombres", "Mujeres"],
+            datasets: [
+              {
+                label: "Género",
+                data: [g2.data[1].total, g2.data[0].total],
+                backgroundColor: [getRandomColor(0.3), getRandomColor(0.3)]
               }
-            }
+            ]
           }
         });
-      })
-      .catch(err => console.log('error:', err));
-
-  //Peticion de datos para la grafica 6 sobre altura
-  axios.get('http://127.0.0.1:5000/getGrafica6')
-  .then(response =>{
-    // Rango de alturas
-    const labels = []
-    datos=[]
-    for (i in response.data){
-        lab=response.data[i];
-        labels.push(lab[0]);
-        datos.push(lab[1]);
-    }
-    
-    const heightCtx = document.getElementById('Grafica6').getContext('2d');
-    const heightChart = new Chart(heightCtx,{
-      type:'bar',
-      data:{
-        labels: labels, // etiqueta de los rangos
-        datasets:[{
-          label:'Numero de personas por altura',
-          data:datos, // datos de la cantidad de personas en cada rango
-          backgroundColor: getRandomColor(0.3)
-        }]
-      },
-      options:{
-        scales:{
-          y:{
-            min:0, // Rango minimo
-            max:10,// rango maximo
-            beginAtZero:true
-          }
-        }
+        // Grafica 3
+        const g3 = await axios.get("http://127.0.0.1:5000/GetGrafica3");
+        new Chart(grafica3, {
+          type: "bar",
+          data: {
+            labels: g3.data.map((x: any) => x.goal),
+            datasets: [
+              {
+                label: "Objetivos",
+                data: g3.data.map((x: any) => x.total),
+                backgroundColor: getRandomColor(0.3)
+              }
+            ]
+          },
+          options: { scales: { y: { beginAtZero: true } } }
+        });
+      
+      //Gracfica 4
+      const g4 = await axios.get("http://127.0.0.1:5000/GetGrafica4");
+      const labels4: string[] = [];
+      const datos4: number[] = [];
+      for (const r of g4.data) {
+        if (r.rol === 1) labels4.push("Administrador");
+        else if (r.rol === 2) labels4.push("Usuario");
+        else if (r.rol === 3) labels4.push("Profesional");
+        datos4.push(r.total);
       }
-    })
-  })
-  .catch(err => console.log('error:', err));
+      new Chart(grafica4, {
+        type: "bar",
+        data: {
+          labels: labels4,
+          datasets: [
+            {
+              label: "Roles",
+              data: datos4,
+              backgroundColor: getRandomColor(0.3)
+            }
+          ]
+        },
+        options: { scales: { y: { beginAtZero: true } } }
+      });
 
-}
-const getRandomColor = (opacidad) =>{
-    const r= Math.floor(Math.random() * 256);
-    const g= Math.floor(Math.random() * 256);
-    const b= Math.floor(Math.random() * 256);
-    return `rgba(${r},${g},${b}, ${opacidad || 1})`;
-}
-const descargarpdf= () => {
-    fetch('http://127.0.0.1:5000/generarPDF')
-     .then(res => res.blob())
-     .then(blob =>{
-       const url = window.URL.createObjectURL(blob);
-       const a = document.createElement('a');
-       a.href = url;
-       a.download = 'Informe.pdf';
-       document.body.appendChild(a);
-       a.click();
-       a.remove();
-     })
-     .catch(error => console.error('Error al generar el PDF:', error));
-}
+      // Grafica 5
+      const g5 = await axios.get("http://127.0.0.1:5000/getGrafica5");
+      const nombres5 = g5.data.map((i: any) => i[0]);
+      const datos5 = g5.data.map((i: any) => i[1]);
+      new Chart(grafica5, {
+        type: "bar",
+        data: {
+          labels: nombres5,
+          datasets: [
+            {
+              label: "Rangos de edad",
+              data: datos5,
+              backgroundColor: getRandomColor(0.3)
+            }
+          ]
+        },
+        options: { scales: { y: { beginAtZero: true } } }
+      });
 
+      // Grafica 6
+      const g6 = await axios.get("http://127.0.0.1:5000/getGrafica6");
+      const etiquetas6 = g6.data.map((x: any) => x[0]);
+      const valores6 = g6.data.map((x: any) => x[1]);
+      new Chart(grafica6, {
+        type: "bar",
+        data: {
+          labels: etiquetas6,
+          datasets: [
+            {
+              label: "Altura",
+              data: valores6,
+              backgroundColor: getRandomColor(0.3)
+            }
+          ]
+        },
+        options: { scales: { y: { beginAtZero: true } } }
+      });
+    }catch(err){
+      console.error("Error al inicializar graficas:",err);
+    }
+  };
+  
+    // Genera los colores Ramdon
+    function getRandomColor(opacidad:number){
+      const r = Math.floor(Math.random() * 256);
+      const g = Math.floor(Math.random() * 256);
+      const b = Math.floor(Math.random() * 256);
+      return `rgba(${r},${g},${b},${opacidad})`;
+    };
 
-Init_Graficas()
+    // Descargar pdf
+    const descargarPDF = async () => {
+    try {
+      const res = await fetch("http://127.0.0.1:5000/generarPDF");
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "Informe.pdf";
+      a.click();
+      a.remove();
+    } catch (error) {
+      console.error("Error al generar el PDF:", error);
+    }
+  };
 
-// reportes.js para sacar el pdf del reporte 
-const { jsPDF } = window.jspdf;
-const GenerarReporte=()=>{
-    const reporte=new jsPDF({
-        orientation:'p',
-        format:'a4',
-        unit:'mm',
-    });
-    reporte.text('Reporte de DsWorkout Advisor', 10, 10);
-    reporte.save('Reporte_DsWorkoutAdvisor.pdf');
-    alert('Reporte generado correctamente');
-}
 </script>
+
 <div class="container col-lg-9 col-md-10 col-sm-12 "><!--principal-->
   <div class="row "><!--div1-->
     <div class=" mt-3 col-12 rounded"><!--div1.1-->
       <div class="text-center">
         <h1 class="text-dark">Estadisticas</h1>
       </div>
-          <button class="btn btn-primary mb-1" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-newspaper" viewBox="0 0 16 16">
-                <!--onclick="descargarpdf()"-->
+          <button onclick={descargarPDF} class="btn btn-primary mb-1" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-newspaper" viewBox="0 0 16 16">
               <path d="M0 2.5A1.5 1.5 0 0 1 1.5 1h11A1.5 1.5 0 0 1 14 2.5v10.528c0 .3-.05.654-.238.972h.738a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 1 1 0v9a1.5 1.5 0 0 1-1.5 1.5H1.497A1.497 1.497 0 0 1 0 13.5zM12 14c.37 0 .654-.211.853-.441.092-.106.147-.279.147-.531V2.5a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0-.5.5v11c0 .278.223.5.497.5z"/>
               <path d="M2 3h10v2H2zm0 3h4v3H2zm0 4h4v1H2zm0 2h4v1H2zm5-6h2v1H7zm3 0h2v1h-2zM7 8h2v1H7zm3 0h2v1h-2zm-3 2h2v1H7zm3 0h2v1h-2zm-3 2h2v1H7zm3 0h2v1h-2z"/>
             </svg> Informe 
@@ -281,43 +201,29 @@ const GenerarReporte=()=>{
   </div><!--div1-->
   <div class="row"><!--div2-->
     <div class="col-12 d-flex  justify-content-between">
-      <h5 id="Activos" class="p-1 col-lg-4 col-md-6  border border-primary rounded my-4 me-4">Total de usuarios Activos: </h5>
-      <h5 id="DiagnosticosTt" class="p-1 col-lg-4  col-md-6  border border-primary rounded my-4 ">Total de diagnosticos realizados: </h5>
+      <h5 id="Activos" class="p-1 col-lg-4 col-md-6  border border-primary rounded my-4 me-4">
+        Usuarios Activos: {totalUsuarios} 
+      </h5>
+      <h5 id="DiagnosticosTt" class="p-1 col-lg-4  col-md-6  border border-primary rounded my-4 ">
+        Diagnosticos realizados: {diagnosticosTotales} 
+      </h5>
     </div>
     <div class="col-12 d-flex  justify-content-between">
-      <h5 id="Ejercicios" class="p-1 col-lg-4 col-md-6  border border-primary rounded my-4">Total de ejercicios registrados: </h5>
-      <h5 id="Rutinas" class="p-1 col-lg-4 col-md-6  border border-primary rounded my-4">Total de rutinas creadas: </h5>
+      <h5 id="Ejercicios" class="p-1 col-lg-4 col-md-6  border border-primary rounded my-4">
+        Ejercicios registrados: {ejercicios} 
+      </h5>
+      <h5 id="Rutinas" class="p-1 col-lg-4 col-md-6  border border-primary rounded my-4">
+        Rutinas creadas:{rutinas} 
+      </h5>
     </div>
   </div><!--div2-->
   <div class="row mb-5 mt-5"><!--div3-->
-    <div class="col-lg-4 col-md-6 col-sm-12">
-      <canvas id="Grafica1">
-      </canvas>
-    </div>
-
-    <div class="col-lg-4 col-md-6 col-sm-12">
-      <canvas id="Grafica2">
-      </canvas>
-    </div>
-
-    <div class="col-lg-4 col-md-6 col-sm-12">
-      <canvas id="Grafica3">
-      </canvas>
-    </div>
-      
-    <div class="col-lg-4 col-md-6 col-sm-12">
-      <canvas id="Grafica4">
-      </canvas>
-    </div>
-      
-    <div class="col-lg-4 col-md-6 col-sm-12">
-      <canvas id="Grafica5">
-      </canvas>
-    </div>
-    <div class="col-lg-4 col-md-6 col-sm-12">
-      <canvas id="Grafica6">
-      </canvas>
-    </div>
+    <div class="col-lg-4 col-md-6 col-sm-12"><canvas bind:this={grafica1}></canvas></div>
+    <div class="col-lg-4 col-md-6 col-sm-12"><canvas bind:this={grafica2}></canvas></div>
+    <div class="col-lg-4 col-md-6 col-sm-12"><canvas bind:this={grafica3}></canvas></div>
+    <div class="col-lg-4 col-md-6 col-sm-12"><canvas bind:this={grafica4}></canvas></div> 
+    <div class="col-lg-4 col-md-6 col-sm-12"><canvas bind:this={grafica5}></canvas></div>
+    <div class="col-lg-4 col-md-6 col-sm-12"><canvas bind:this={grafica6}></canvas></div>
        <!-- <a onclick="GenerarReporte()" class="btn btn-primary">Generar reporte</a>-->
   </div><!--div3-->
 </div><!--principal-->

@@ -89,11 +89,13 @@
                                 <option value="2">Fit</option>
                                 <option value="1">Administrador</option>
                             </select><br>
-
-                            <button class="btn btn-primary" onclick={verificar}>
+                             
+                            <button class="btn btn-primary"  onclick={verificar}>
                                 INICIAR
                             </button>
-
+                             <!--
+                              <a class="btn btn-primary" href="/confuser_ad"> INICIAR</a>
+                             -->
                             <a href="/registro" class=" btn btn-primary text-decoration-none text-white">REGISTRARSE</a>
                             
                             <a href="/" class="btn btn-success text-decoration-none text-white ">VOLVER</a>
