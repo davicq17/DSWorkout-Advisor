@@ -1,3 +1,8 @@
+<script>
+  import Navbar from "$lib/components/Navbar.svelte";
+</script>
+<!--para esta entrega-->
+<Navbar rol={0}/>
 <!-- Contenido principal -->
 <div class="container d-flex-column">
   <div class="justify-content-center p-2">

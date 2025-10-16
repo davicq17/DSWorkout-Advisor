@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Navbar from "$lib/components/Navbar.svelte";
   import axios from "axios";
   import { onMount } from "svelte";
   import { Chart, registerables } from "chart.js";
@@ -19,7 +20,7 @@
   let grafica6: HTMLCanvasElement;
 
   onMount(()=>{
-
+    Init_Graficas();
   });
 
   // Funcion general 
@@ -35,6 +36,7 @@
       // Grafica 1 del IMC
       const g1 = await axios.get("http://127.0.0.1:5000/GetGrafica1");
       const counts = [0,0,0,0];
+      console.log("resuesta de grafica 1:",g1.data)
       for(const p of g1.data ){
         const IMC= parseFloat(p.weight)/ (parseFloat(p.height)**2);
         if(IMC < 18.5)counts[0]++;
@@ -185,7 +187,8 @@
   };
 
 </script>
-
+<!--para está entrega-->
+<Navbar rol={1}/>
 <div class="container col-lg-9 col-md-10 col-sm-12 "><!--principal-->
   <div class="row "><!--div1-->
     <div class=" mt-3 col-12 rounded"><!--div1.1-->

@@ -1,6 +1,7 @@
 <script lang="ts">
-  const {data}=$props(); // el rol y el token vienen del servidor
-  let {rol,token}=data;
+  /*const {data}=$props(); // el rol y el token vienen del servidor
+  let {rol,token}=data;*/
+  let {rol}=$props<{rol?:number}>();
 	function paths(rol: number) {
 		switch(rol){
 			case 0: 
@@ -47,11 +48,13 @@
   <div class="container-fluid">
     <!--logo-->
           <img class="navbar-branad" src="/img/e-trainer.ico" alt="DS LOGO" width="60px" height="60px">
-			<h1 class="h5 text-decoration-none text-white">
+		  <!--
+		  <h1 class="h5 text-decoration-none text-white">
 			{#if data.user}
 				Bienvenido(a) {data.user.name} 
 			{/if}
 		  	</h1>
+		  -->
             <!--boton para abrir el menu-->
           <button class="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target="#menu-navbar" aria-controls="menu-navbar" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -64,11 +67,16 @@
                   <a class="nav-link fw-bold" href={pagina.url}>{pagina.name}</a>
                 </li>
               {/each}
-				{#if token}
+			  <!--
+			  {#if token}
 					<li class="nav-item">
 				  		<button class="nav-link fw-bold" onclick={cerranSesion}>CERRAR SESIÓN</button>
                 	</li>
 			  	{/if}
+			  -->
+				<li class="nav-item">
+				  		<a class="nav-link fw-bold" href="/" >CERRAR SESIÓN</a>
+                </li>
             </ul>
           </div>
   </div>

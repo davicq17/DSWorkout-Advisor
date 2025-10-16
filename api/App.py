@@ -1,21 +1,83 @@
 ############# importar librerias o recursos#####
+import jwt, datetime
 from flask import Flask, request, jsonify, send_file
 from flask_mysqldb import MySQL
 from flask_cors import CORS, cross_origin
-import jwt, datetime
-
-
-
-
+from .routes.graficas import graficas
 
 
 # initializations
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*":{"origins":"*"}})
 
+app.config['MYSQL_HOST'] = '' 
+app.config['MYSQL_USER'] = ''
+app.config['MYSQL_PORT'] = ""
+app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_DB'] = 'defaultdb'
+
+app.config['MYSQL_CLIENT_FLAG'] = 2  # CLIENT_SSL
+
+
+
+mysql = MySQL(app)
 # cargar la info de la BD del archivo toml
 
 app.secret_key = "dsworkout"
+
+#rutas de graficas
+app.register_blueprint(graficas)
+
+@app.route('/TableUser', methods=['GET'])
+def TableUser():
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute('SELECT * FROM usuarios WHERE status = 1')
+        rv = cur.fetchall()
+        cur.close()
+        payload = []
+        content = {}
+        for result in rv:
+            content = {'id': result[0], 'username': result[1], 'name': result[2], 'surname': result[3],'email': result[4],'password': result[5],'cell': result[6],'rol':result[7]}
+            payload.append(content)
+            content = {} 
+        return jsonify(payload)
+    except Exception as e:
+        print(e)
+        return jsonify({"informacion":str(e)})
+
+@app.route('/editUser/<id>', methods=['PUT'])
+def editUser(id):
+    try:
+        if request.method == 'PUT':
+            username= request.json['username']
+            name = request.json['name']
+            surname = request.json['surname']
+            email= request.json['email']  
+            password = request.json['password']
+            cell= request.json['cell']
+            rol=request.json['rol']
+            cur = mysql.connection.cursor()
+            cur.execute("UPDATE usuarios SET username=%s,name=%s,surname=%s,email=%s,password=%s,cell=%s,rol=%s WHERE id=%s", (username,name,surname,email,password,cell,rol,id))
+            mysql.connection.commit()
+            cur.close()
+            return jsonify({"informacion":"Actualizacion realizada con exito"})
+    except Exception as e:
+        print(e)
+        return jsonify({"informacion":e})
+
+@app.route('/delete/<id>', methods = ['PUT'])
+def delete_contact(id):
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute('UPDATE usuarios SET status = %s WHERE id = %s', (0, id))
+        mysql.connection.commit()
+        cur.close()
+        return jsonify({"informacion":"Registro eliminado"}) 
+    except Exception as e:
+        print(e)
+        return jsonify({"informacion":e})
+
 
 
 # ruta para consultar todos los registros de estado fisico a traves de una vista creada en la base de datos

@@ -1,9 +1,17 @@
-from api.db import pool
+from flask import Blueprint, jsonify
+from flask_mysqldb import MySQL
+from ..db import mysql #pool#
 
-##peticion de datos generales para Estadisticas####
-@app.route('/GetGeneral',methods=['GET'])
-def GetGeneral():
+graficas = Blueprint('graficas',__name__)
+
+
+#peticion de datos generales para Estadisticas####
+@graficas.route('/GetGeneral',methods=['GET'])
+def get_general():
+    """se obtienen lo datos generales a mostrar"""
     try:
+        """conn= pool.getconn()
+        cur = conn.cursor()"""
         cur = mysql.connection.cursor()
         cur.execute('''SELECT count(usuarios.id) as total, 
                     (SELECT count(*) as evaluation FROM evaluation) as diagnosticos, 
@@ -17,12 +25,15 @@ def GetGeneral():
         return jsonify(content)
     except Exception as e:
         print(e)
-        return jsonify({"informacion":e})
+        return jsonify({"informacion":str(e)})
 
-###Peticion de datos para la grafica 1####
-@app.route('/GetGrafica1',methods=['GET'])
-def GetGrafica1():
+
+@graficas.route('/GetGrafica1',methods=['GET'])
+def get_grafica1():
+    """petición de datos para la grafica 1"""
     try:
+        """conn= pool.getconn()
+        cur = conn.cursor()"""
         cur = mysql.connection.cursor()
         cur.execute('''SELECT cliente.weight,cliente.height
             FROM cliente join usuarios ON (cliente.id_usuario=usuarios.id) where usuarios.status=1''')
@@ -36,14 +47,17 @@ def GetGrafica1():
         return jsonify(payload)
     except Exception as e:
         print(e)
-        return jsonify({"informacion":e})
+        return jsonify({"informacion":str(e)})
 
 
-####Peticion de datos para la grafica 2####
 
-@app.route('/GetGrafica2', methods=['GET'])
-def GetGrafica2():
+
+@graficas.route('/GetGrafica2', methods=['GET'])
+def get_grafica2():
+    """petición de datos para la grafica """
     try:
+        """conn= pool.getconn()
+        cur = conn.cursor()"""
         cur = mysql.connection.cursor()
         cur.execute("SELECT cliente.gender, count(0) AS total,(SELECT count(*) as total from evaluation) FROM (cliente join usuarios on(cliente.id_usuario = usuarios.id)) WHERE usuarios.status = 1 GROUP BY cliente.gender")
         rv = cur.fetchall()
@@ -56,15 +70,18 @@ def GetGrafica2():
         return jsonify(payload)
     except Exception as e:
         print(e)
-        return jsonify({"informacion":e})
+        return jsonify({"informacion":str(e)})
 
 
-####Peticion de datos para la grafica 3####
 
-@app.route('/GetGrafica3',methods=['GET'])
-def GetGrafica3():
+
+@graficas.route('/GetGrafica3',methods=['GET'])
+def get_grafica3():
+    """petición de datos para la grafica 3"""
     try:
-        cur=mysql.connection.cursor()
+        """conn= pool.getconn()
+        cur = conn.cursor()"""
+        cur = mysql.connection.cursor()
         cur.execute("Select cliente.goal ,count(*) AS total FROM( cliente JOIN usuarios ON (cliente.id_usuario=usuarios.id)) WHERE usuarios.status=1 group by cliente.goal")
         rv=cur.fetchall()
         cur.close()
@@ -76,13 +93,16 @@ def GetGrafica3():
         return jsonify(payload)
     except Exception as e:
         print(e)
-        return jsonify({"informacion":e})
+        return jsonify({"informacion":str(e)})
 
 
-@app.route('/GetGrafica4',methods=['GET'])
-def GetGrafica4():
+@graficas.route('/GetGrafica4',methods=['GET'])
+def get_grafica4():
+    """petición de datos para la grafica 4"""
     try:
-        cur=mysql.connection.cursor()
+        """conn= pool.getconn()
+        cur = conn.cursor()"""
+        cur = mysql.connection.cursor()
         cur.execute("SELECT rol,count(*) AS total FROM usuarios WHERE status=1 group by rol")
         rv=cur.fetchall()
         cur.close()
@@ -94,11 +114,15 @@ def GetGrafica4():
         return jsonify(payload)
     except Exception as e:
         print(e)
-        return jsonify({"informacion":e})
-####Peticion de datos para la grafica 5####
-@app.route('/getGrafica5',methods=['GET'])
-def getGrafica5():
+        return jsonify({"informacion":str(e)})
+
+
+@graficas.route('/getGrafica5',methods=['GET'])
+def get_grafica5():
+    """petición de datos para la grafica 5"""
     try:
+        """conn= pool.getconn()
+        cur = conn.cursor()"""
         cur = mysql.connection.cursor()
         cur.execute('''SELECT 
                 CASE 
@@ -123,11 +147,14 @@ def getGrafica5():
         return jsonify({"error":str(e)})
 
 
-###Peticion de datos para la grafica 6###
-@app.route('/getGrafica6',methods=['GET'])
-def getGrafica6():
+
+@graficas.route('/getGrafica6',methods=['GET'])
+def get_grafica6():
+    """petición de datos para la grafica 6"""
+    """conn= pool.getconn()
+        cur = conn.cursor()"""
     try:
-        cur = mysql.connection.cursor()
+        cur=mysql.connection.cursor()
         cur.execute('''SELECT 
                 CASE 
                     WHEN height BETWEEN 1.55 AND 1.65 THEN '1.55-1.65'

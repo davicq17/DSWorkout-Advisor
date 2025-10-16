@@ -1,3 +1,7 @@
+ <script>
+  import Navbar from "$lib/components/Navbar.svelte";
+ </script>
+ <Navbar rol={0}/>
  <!--carrusel-->
     <div class="container d-flex-colum">
         <div id="carouselExampleAutoplaying" class="carousel slide my-3 justify-content-center" data-bs-ride="carousel">

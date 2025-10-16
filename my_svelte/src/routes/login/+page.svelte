@@ -90,8 +90,9 @@
                                 <option value="1">Administrador</option>
                             </select><br>
                              
-                            <button class="btn btn-primary"  onclick={verificar}>
-                                INICIAR
+                            <button class="btn btn-primary">
+                              <!--onclick={verificar}-->
+                                <a href="/confuser_ad" class="text-decoration-none text-white">INICIAR</a>
                             </button>
                              <!--
                               <a class="btn btn-primary" href="/confuser_ad"> INICIAR</a>

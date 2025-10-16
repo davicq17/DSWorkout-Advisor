@@ -1,4 +1,6 @@
 <script lang="ts">
+  // para esta entrega 
+  import Navbar from "$lib/components/Navbar.svelte";
   import axios from "axios";
   import {onMount} from 'svelte';
   // almacen de datos
@@ -12,11 +14,11 @@
   // pedir datos de la bd
   const Init_Data= async () =>{
     try{
-      const response = await axios.get("http://127.0.0.1:5000/tableUser");
+      const response = await axios.get("http://127.0.0.1:5000/TableUser");
       usuarios= response.data.map((u:any)=>({
         ...u,
         // combertidor del rol en texto
-        rolTxt:u.rol=== 1? "Administrador" : u.rol===2 ? "Usiario" : "Profesional",
+        rolTxt:u.rol=== 1? "Administrador" : u.rol===2 ? "Usuario" : "Profesional",
       }));
       console.log("usuarios cargados:",usuarios);
     }catch(err){
@@ -28,7 +30,7 @@
 
   const Actualizar= async()=>{
     try{
-      await axios.put(`http://127.0.0.1:5000/edituser/${userEdit.id}`,userEdit);
+      await axios.put(`http://127.0.0.1:5000/editUser/${userEdit.id}`,userEdit);
       alert("usuario actualizado correctamente");
       userEdit=null;
       await Init_Data();
@@ -50,6 +52,8 @@
   };
 
 </script>
+<!--para está entrega-->
+<Navbar rol={1}/>
 <div class="container my-5"><!--principal-->
   <div class="col-12  d-flex justify-content-center"><!--div1-->
     <h1 class="h1">Información de Usuarios logueados</h1>
@@ -81,14 +85,10 @@
           <td>{user.rolTxt}</td>
           <td> 
             <button onclick={()=>preEditar(user)} class="btn btn-warning btn-sm ms-3" data-bs-toggle="modal"data-bs-target="#Editar"aria-label="Editar usuario">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
-              <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
-              </svg>
+              Editar
             </button>
-            <button onclick={()=>userEliminar=user} class="btn btn-warning btn-sm ms-3" data-bs-toggle="modal"data-bs-target="#Editar"aria-label="Editar usuario">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
-              <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
-              </svg>
+            <button onclick={()=>userEliminar=user} class="btn btn-danger btn-sm ms-3" data-bs-toggle="modal"data-bs-target="#Editar"aria-label="Editar usuario">
+              Eliminar
             </button>
           </td>
         </tr>
