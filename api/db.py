@@ -1,21 +1,22 @@
+import mysql.connector
 import tomllib
-from psycopg_pool import ConnectionPool
-from flask_mysqldb import MySQL
-from flask import Flask
 
-app = Flask(__name__)
-""" pool = None""" 
+# Cargar la configuración desde el archivo TOML
+with open("api/pyproject.toml", "rb") as f:
+    config = tomllib.load(f)
+db_conf = config["database"]
 
- 
-app.config['MYSQL_HOST'] = 'localhost' 
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'proyecto_fn'
-mysql = MySQL(app)
-"""with open("pyproject.toml","rb") as f:
-        config = tomllib.load(f)
-        pool = ConnectionPool(
-            conninfo=(config["database"]["DATABASE_URL"]),
-            min_size=1,
-            max_size=10
-        )"""
+def get_conn():
+    """Crea y retorna una conexión a la base de datos MySQL usando datos del TOML."""
+    try:
+        conn = mysql.connector.connect(
+            host=db_conf["host"],
+            user=db_conf["user"],
+            password=db_conf["password"],
+            database=db_conf["database"],
+            port=db_conf["port"]
+        )
+        return conn
+    except mysql.connector.Error as err:
+        print(f"❌ Error conectando a MySQL: {err}")
+        return None

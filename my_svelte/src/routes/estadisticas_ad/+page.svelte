@@ -11,7 +11,7 @@
   let ejercicios = $state(0);
   let rutinas = $state(0);
 
-  // variables de graficas 
+  // variables de graficas
   let grafica1: HTMLCanvasElement;
   let grafica2: HTMLCanvasElement;
   let grafica3: HTMLCanvasElement;
@@ -23,7 +23,7 @@
     Init_Graficas();
   });
 
-  // Funcion general 
+  // Funcion general
   const Init_Graficas = async ()=>{
     try{
       // peticion de datos generales
@@ -37,12 +37,14 @@
       const g1 = await axios.get("http://127.0.0.1:5000/GetGrafica1");
       const counts = [0,0,0,0];
       console.log("resuesta de grafica 1:",g1.data)
-      for(const p of g1.data ){
-        const IMC= parseFloat(p.weight)/ (parseFloat(p.height)**2);
-        if(IMC < 18.5)counts[0]++;
-        else if (IMC < 24.9) counts[1]++;
-        else if (IMC < 30) counts[2]++;
-        else counts[3]++;
+      let alturaM=0
+      for(let p of g1.data ){
+        alturaM=(parseFloat(p.height)/100)
+        let IMC= parseFloat(p.weight)/ (alturaM*alturaM);
+        if(IMC <= 18.5)counts[0]++;
+        else if (IMC > 18.5 && IMC <= 24.9 ) counts[1]++;
+        else if (IMC <= 30 && IMC > 24.9) counts[2]++;
+        else if (IMC > 30 ) counts[3]++;
       }
       new Chart(grafica1,{
         type:"pie",
@@ -65,6 +67,7 @@
 
       // Grafica 2
       const g2 = await axios.get("http://127.0.0.1:5000/GetGrafica2");
+        console.log(g2.data)
         new Chart(grafica2, {
           type: "pie",
           data: {
@@ -94,7 +97,7 @@
           },
           options: { scales: { y: { beginAtZero: true } } }
         });
-      
+
       //Gracfica 4
       const g4 = await axios.get("http://127.0.0.1:5000/GetGrafica4");
       const labels4: string[] = [];
@@ -141,27 +144,29 @@
 
       // Grafica 6
       const g6 = await axios.get("http://127.0.0.1:5000/getGrafica6");
-      const etiquetas6 = g6.data.map((x: any) => x[0]);
-      const valores6 = g6.data.map((x: any) => x[1]);
+      console.log(g6.data)
+      for (i in g6.data){
+        lab=g6.data[i];
+        labels.push(lab[0]);
+        datos.push(lab[1]);
+    }
       new Chart(grafica6, {
         type: "bar",
-        data: {
-          labels: etiquetas6,
-          datasets: [
-            {
-              label: "Altura",
-              data: valores6,
-              backgroundColor: getRandomColor(0.3)
-            }
-          ]
-        },
+        data:{
+        labels: labels, // etiqueta de los rangos
+        datasets:[{
+          label:'Numero de personas por altura',
+          data:datos, // datos de la cantidad de personas en cada rango
+          backgroundColor: getRandomColor(0.2)
+        }]
+      },
         options: { scales: { y: { beginAtZero: true } } }
       });
     }catch(err){
       console.error("Error al inicializar graficas:",err);
     }
   };
-  
+
     // Genera los colores Ramdon
     function getRandomColor(opacidad:number){
       const r = Math.floor(Math.random() * 256);
@@ -198,25 +203,25 @@
           <button onclick={descargarPDF} class="btn btn-primary mb-1" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-newspaper" viewBox="0 0 16 16">
               <path d="M0 2.5A1.5 1.5 0 0 1 1.5 1h11A1.5 1.5 0 0 1 14 2.5v10.528c0 .3-.05.654-.238.972h.738a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 1 1 0v9a1.5 1.5 0 0 1-1.5 1.5H1.497A1.497 1.497 0 0 1 0 13.5zM12 14c.37 0 .654-.211.853-.441.092-.106.147-.279.147-.531V2.5a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0-.5.5v11c0 .278.223.5.497.5z"/>
               <path d="M2 3h10v2H2zm0 3h4v3H2zm0 4h4v1H2zm0 2h4v1H2zm5-6h2v1H7zm3 0h2v1h-2zM7 8h2v1H7zm3 0h2v1h-2zm-3 2h2v1H7zm3 0h2v1h-2zm-3 2h2v1H7zm3 0h2v1h-2z"/>
-            </svg> Informe 
+            </svg> Informe
           </button>
     </div><!--div1-->
   </div><!--div1-->
   <div class="row"><!--div2-->
     <div class="col-12 d-flex  justify-content-between">
       <h5 id="Activos" class="p-1 col-lg-4 col-md-6  border border-primary rounded my-4 me-4">
-        Usuarios Activos: {totalUsuarios} 
+        Usuarios Activos: {totalUsuarios}
       </h5>
       <h5 id="DiagnosticosTt" class="p-1 col-lg-4  col-md-6  border border-primary rounded my-4 ">
-        Diagnosticos realizados: {diagnosticosTotales} 
+        Diagnosticos realizados: {diagnosticosTotales}
       </h5>
     </div>
     <div class="col-12 d-flex  justify-content-between">
       <h5 id="Ejercicios" class="p-1 col-lg-4 col-md-6  border border-primary rounded my-4">
-        Ejercicios registrados: {ejercicios} 
+        Ejercicios registrados: {ejercicios}
       </h5>
       <h5 id="Rutinas" class="p-1 col-lg-4 col-md-6  border border-primary rounded my-4">
-        Rutinas creadas:{rutinas} 
+        Rutinas creadas:{rutinas}
       </h5>
     </div>
   </div><!--div2-->
@@ -224,7 +229,7 @@
     <div class="col-lg-4 col-md-6 col-sm-12"><canvas bind:this={grafica1}></canvas></div>
     <div class="col-lg-4 col-md-6 col-sm-12"><canvas bind:this={grafica2}></canvas></div>
     <div class="col-lg-4 col-md-6 col-sm-12"><canvas bind:this={grafica3}></canvas></div>
-    <div class="col-lg-4 col-md-6 col-sm-12"><canvas bind:this={grafica4}></canvas></div> 
+    <div class="col-lg-4 col-md-6 col-sm-12"><canvas bind:this={grafica4}></canvas></div>
     <div class="col-lg-4 col-md-6 col-sm-12"><canvas bind:this={grafica5}></canvas></div>
     <div class="col-lg-4 col-md-6 col-sm-12"><canvas bind:this={grafica6}></canvas></div>
        <!-- <a onclick="GenerarReporte()" class="btn btn-primary">Generar reporte</a>-->

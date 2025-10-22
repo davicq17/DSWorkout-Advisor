@@ -4,19 +4,11 @@ from flask import Flask, request, jsonify, send_file
 from flask_mysqldb import MySQL
 from flask_cors import CORS, cross_origin
 from .routes.graficas import graficas
-
+from .db import get_conn
 
 # initializations
 app = Flask(__name__)
 CORS(app, resources={r"/*":{"origins":"*"}})
-
-app.config['MYSQL_HOST'] = '' 
-app.config['MYSQL_USER'] = ''
-app.config['MYSQL_PORT'] = ""
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'defaultdb'
-
-app.config['MYSQL_CLIENT_FLAG'] = 2  # CLIENT_SSL
 
 
 
@@ -31,16 +23,17 @@ app.register_blueprint(graficas)
 @app.route('/TableUser', methods=['GET'])
 def TableUser():
     try:
-        cur = mysql.connection.cursor()
-        cur.execute('SELECT * FROM usuarios WHERE status = 1')
-        rv = cur.fetchall()
-        cur.close()
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute('SELECT * FROM usuarios WHERE status = 1')
+                rv = cur.fetchall()
+
         payload = []
         content = {}
         for result in rv:
             content = {'id': result[0], 'username': result[1], 'name': result[2], 'surname': result[3],'email': result[4],'password': result[5],'cell': result[6],'rol':result[7]}
             payload.append(content)
-            content = {} 
+            content = {}
         return jsonify(payload)
     except Exception as e:
         print(e)
@@ -53,7 +46,7 @@ def editUser(id):
             username= request.json['username']
             name = request.json['name']
             surname = request.json['surname']
-            email= request.json['email']  
+            email= request.json['email']
             password = request.json['password']
             cell= request.json['cell']
             rol=request.json['rol']
@@ -73,7 +66,7 @@ def delete_contact(id):
         cur.execute('UPDATE usuarios SET status = %s WHERE id = %s', (0, id))
         mysql.connection.commit()
         cur.close()
-        return jsonify({"informacion":"Registro eliminado"}) 
+        return jsonify({"informacion":"Registro eliminado"})
     except Exception as e:
         print(e)
         return jsonify({"informacion":e})
@@ -98,6 +91,7 @@ def Table_Fisic_State():
     except Exception as e:
         print(e)
         return jsonify({"informacion":e})
+
 
 # ruta para saber informacion de un usuario con el id a traves de una vista creada en la base de datos
 @app.route('/FisicById/<id>',methods=['GET'])
@@ -139,7 +133,7 @@ def registroEjercicio():
 #ruta para  mostrar los ejercicios en la tabla
 @app.route('/ejercicioTabla',methods=['GET'])
 def ejercicioTabla():
-    try: 
+    try:
         if request.method =='GET':
             cur=mysql.connection.cursor()
             cur.execute('SELECT * FROM workout')
@@ -156,8 +150,8 @@ def ejercicioTabla():
                 else:
                     re=result[9]
                 content={'id':result[0],
-                         'nombre':result[1], 
-                         'guia':result[2], 
+                         'nombre':result[1],
+                         'guia':result[2],
                          'tipo':result[3],
                          'equipo':result[4],
                          'nivel':result[5],
@@ -251,7 +245,7 @@ def EjerciciosUser(idRutina):
     except Exception as e:
         print(e)
         return jsonify({"informacion":e})
-    
+
 
 
 
@@ -282,7 +276,7 @@ def registro():
             username= data['username']
             name = data['name']
             surname = data['surname']
-            email= data['email']  
+            email= data['email']
             password = data['password']
             cell= data['cell']
             rol=data['rol']
@@ -301,7 +295,7 @@ def registro():
             #print(f"id usuario: {id_usuario}")
             #verifica que el usuario es profesional
             if rol == '3' and speciality:
-                # inserción en la tabla del profesional con el id obtenido 
+                # inserción en la tabla del profesional con el id obtenido
                 cur.execute("INSERT INTO profesional (id_usuario, `specialty`) VALUES (%s,%s)",(id_usuario,speciality))
                 print("inserccón de profesional realizada")
             mysql.connection.commit()
@@ -349,15 +343,15 @@ def regisRutina():
         #print(ejercicios)
         cur=mysql.connection.cursor()
         cur.execute('INSERT INTO routine (id_prof,nombre,descripcion,duration,nivel) VALUES (%s,%s,%s,%s,%s)',(id_prof,nombre,descripcion,duracion,nivel))
-        
+
         cur.execute("SELECT LAST_INSERT_ID()")
         id_routine=cur.fetchone()[0]
 
         peticion='INSERT INTO routine_workout (id_routine,id_workout, orden) VALUES '
         exer=ejercicios.split(',')
-        
+
         for i in range(len(exer)):
-            n=i+1	
+            n=i+1
             peticion=peticion+' ('+str(id_routine)+','+str(exer[i])+','+str(n)+')'
             if i!=len(exer)-1:
                 peticion=peticion+','
@@ -367,9 +361,9 @@ def regisRutina():
         return jsonify({"informacion":"Registro de rutina Exitoso"})
     except Exception as e:
         return jsonify({"error":e})
-    
+
 @app.route('/getRoutines', methods=['GET'])
-def getRoutines(): 
+def getRoutines():
     try:
         cur=mysql.connection.cursor()
         cur.execute("SELECT CONCAT(usuarios.name,' ',usuarios.surname) as profesional,routine.id_routine,routine.nombre,descripcion,duration,nivel FROM routine JOIN usuarios ON routine.id_prof=usuarios.id ")
@@ -400,10 +394,9 @@ def RutinaModal():
         return jsonify(payload)
     except Exception as e:
         return jsonify({"error":str(e)})
-    
+
 
 
 # starting the app
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
-

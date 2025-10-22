@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify
 from flask_mysqldb import MySQL
-from ..db import mysql #pool#
+from api.db import get_conn
 
 graficas = Blueprint('graficas',__name__)
 
@@ -10,18 +10,16 @@ graficas = Blueprint('graficas',__name__)
 def get_general():
     """se obtienen lo datos generales a mostrar"""
     try:
-        """conn= pool.getconn()
-        cur = conn.cursor()"""
-        cur = mysql.connection.cursor()
-        cur.execute('''SELECT count(usuarios.id) as total, 
-                    (SELECT count(*) as evaluation FROM evaluation) as diagnosticos, 
-                    (SELECT count(*) FROM routine) as rutinas, 
-                    (SELECT count(*) FROM workout) as ejercicios  
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute('''SELECT count(usuarios.id) as total,
+                    (SELECT count(*) as evaluacion FROM evaluacion) as diagnosticos,
+                    (SELECT count(*) FROM routine) as rutinas,
+                    (SELECT count(*) FROM workout) as ejercicios
                     FROM usuarios where usuarios.status = 1''')
-        rv = cur.fetchone()
-        cur.close()
+                rv = cur.fetchone()
         content={'totalUsuarios': rv[0],'diagnosticosTotales': rv[1], 'rutinas': rv[2], 'ejercicios':rv[3]}
-        
+
         return jsonify(content)
     except Exception as e:
         print(e)
@@ -32,13 +30,18 @@ def get_general():
 def get_grafica1():
     """petición de datos para la grafica 1"""
     try:
-        """conn= pool.getconn()
-        cur = conn.cursor()"""
-        cur = mysql.connection.cursor()
-        cur.execute('''SELECT cliente.weight,cliente.height
-            FROM cliente join usuarios ON (cliente.id_usuario=usuarios.id) where usuarios.status=1''')
-        rv = cur.fetchall()
-        cur.close()
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute('''SELECT
+                                    e.weight AS peso,
+                                    e.height AS altura
+                                FROM evaluacion e
+                                INNER JOIN usuarios u ON e.id_cliente = u.id
+                                WHERE u.status = 1;
+
+                    ''')
+                rv = cur.fetchall()
+
         payload = []
         content = {}
         for result in rv:
@@ -56,12 +59,20 @@ def get_grafica1():
 def get_grafica2():
     """petición de datos para la grafica """
     try:
-        """conn= pool.getconn()
-        cur = conn.cursor()"""
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT cliente.gender, count(0) AS total,(SELECT count(*) as total from evaluation) FROM (cliente join usuarios on(cliente.id_usuario = usuarios.id)) WHERE usuarios.status = 1 GROUP BY cliente.gender")
-        rv = cur.fetchall()
-        cur.close()
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""SELECT
+                                    e.gender,
+                                    COUNT(*) AS total,
+                                    (SELECT COUNT(*) FROM evaluacion) AS total_evaluaciones
+                                FROM evaluacion e
+                                INNER JOIN usuarios u ON e.id_cliente = u.id
+                                WHERE u.status = 1
+                                GROUP BY e.gender;
+
+                                """)
+                rv = cur.fetchall()
+
         payload = []
         content = {}
         for result in rv:
@@ -79,12 +90,18 @@ def get_grafica2():
 def get_grafica3():
     """petición de datos para la grafica 3"""
     try:
-        """conn= pool.getconn()
-        cur = conn.cursor()"""
-        cur = mysql.connection.cursor()
-        cur.execute("Select cliente.goal ,count(*) AS total FROM( cliente JOIN usuarios ON (cliente.id_usuario=usuarios.id)) WHERE usuarios.status=1 group by cliente.goal")
-        rv=cur.fetchall()
-        cur.close()
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                            SELECT
+                            e.goal,
+                            COUNT(*) AS total
+                        FROM evaluacion e
+                        JOIN usuarios u ON e.id_cliente = u.id
+                        WHERE u.status = 1
+                        GROUP BY e.goal;
+                        """)
+                rv=cur.fetchall()
         content={}
         payload=[]
         for result in rv:
@@ -100,12 +117,10 @@ def get_grafica3():
 def get_grafica4():
     """petición de datos para la grafica 4"""
     try:
-        """conn= pool.getconn()
-        cur = conn.cursor()"""
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT rol,count(*) AS total FROM usuarios WHERE status=1 group by rol")
-        rv=cur.fetchall()
-        cur.close()
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT rol,count(*) AS total FROM usuarios WHERE status=1 group by rol")
+                rv=cur.fetchall()
         content={}
         payload=[]
         for result in rv:
@@ -121,27 +136,29 @@ def get_grafica4():
 def get_grafica5():
     """petición de datos para la grafica 5"""
     try:
-        """conn= pool.getconn()
-        cur = conn.cursor()"""
-        cur = mysql.connection.cursor()
-        cur.execute('''SELECT 
-                CASE 
-                    WHEN age BETWEEN 0 AND 17 THEN '0-17'
-                    WHEN age BETWEEN 18 AND 25 THEN '18-25'
-                    WHEN age BETWEEN 26 AND 35 THEN '26-35'
-                    WHEN age BETWEEN 36 AND 45 THEN '36-45'
-                    WHEN age BETWEEN 46 AND 55 THEN '46-55'
-                    WHEN age BETWEEN 56 AND 65 THEN '56-65'
-                    WHEN age > 65 THEN '66+'
-                    ELSE 'Unknown'
-                END AS rango_edad,
-                COUNT(*) AS numero_de_personas
-            FROM cliente join usuarios on cliente.id_usuario=usuarios.id where status=1
-                GROUP BY rango_edad
-                    ''')
-        rv = cur.fetchall()
-        cur.close()
-        
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT
+                    CASE
+                        WHEN CAST(e.age AS UNSIGNED) BETWEEN 0 AND 17 THEN '0-17'
+                        WHEN CAST(e.age AS UNSIGNED) BETWEEN 18 AND 25 THEN '18-25'
+                        WHEN CAST(e.age AS UNSIGNED) BETWEEN 26 AND 35 THEN '26-35'
+                        WHEN CAST(e.age AS UNSIGNED) BETWEEN 36 AND 45 THEN '36-45'
+                        WHEN CAST(e.age AS UNSIGNED) BETWEEN 46 AND 55 THEN '46-55'
+                        WHEN CAST(e.age AS UNSIGNED) BETWEEN 56 AND 65 THEN '56-65'
+                        WHEN CAST(e.age AS UNSIGNED) > 65 THEN '66+'
+                        ELSE 'Unknown'
+                    END AS rango_edad,
+                    COUNT(*) AS numero_de_personas
+                FROM evaluacion e
+                JOIN usuarios u ON e.id_cliente = u.id
+                WHERE u.status = 1
+                GROUP BY rango_edad;
+                """)
+                rv = cur.fetchall()
+
+
         return jsonify(rv)
     except Exception as e:
         return jsonify({"error":str(e)})
@@ -150,25 +167,26 @@ def get_grafica5():
 
 @graficas.route('/getGrafica6',methods=['GET'])
 def get_grafica6():
-    """petición de datos para la grafica 6"""
-    """conn= pool.getconn()
-        cur = conn.cursor()"""
+
     try:
-        cur=mysql.connection.cursor()
-        cur.execute('''SELECT 
-                CASE 
-                    WHEN height BETWEEN 1.55 AND 1.65 THEN '1.55-1.65'
-                    WHEN height BETWEEN 1.65 AND 1.75 THEN '1.65-1.75'
-                    WHEN height BETWEEN 1.72 AND 1.85 THEN '1.75-1.85'
-                    WHEN height BETWEEN 1.85 AND 1.95 THEN '1.85-1.95'
-                    ELSE 'Unknown'
-                END AS rango_altura,
-                COUNT(*) AS numero_de_personas
-            FROM cliente join usuarios on cliente.id_usuario=usuarios.id where status=1
-            GROUP BY rango_altura''')
-        rv = cur.fetchall()
-        cur.close()
-        
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute('''SELECT
+                                    CASE
+                                        WHEN CAST(e.height AS DECIMAL(4,2)) BETWEEN 155 AND 165 THEN '1.55-1.65'
+                                        WHEN CAST(e.height AS DECIMAL(4,2)) BETWEEN 166 AND 175 THEN '1.66-1.75'
+                                        WHEN CAST(e.height AS DECIMAL(4,2)) BETWEEN 176 AND 185 THEN '1.76-1.85'
+                                        WHEN CAST(e.height AS DECIMAL(4,2)) BETWEEN 186 AND 195 THEN '1.86-1.95'
+                                        ELSE 'Unknown'
+                                    END AS rango_altura,
+                                    COUNT(*) AS numero_de_personas
+                                FROM evaluacion e
+                                JOIN usuarios u ON e.id_cliente = u.id
+                                WHERE u.status = 1
+                                GROUP BY rango_altura;
+                                ''')
+            rv = cur.fetchall()
+
         return jsonify(rv)
     except Exception as e:
         return jsonify({"error":str(e)})

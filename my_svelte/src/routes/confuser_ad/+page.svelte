@@ -1,5 +1,6 @@
-<script lang="ts">
-  // para esta entrega 
+<script lang="ts" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
+
+  // para esta entrega
   import Navbar from "$lib/components/Navbar.svelte";
   import axios from "axios";
   import {onMount} from 'svelte';
@@ -17,7 +18,7 @@
       const response = await axios.get("http://127.0.0.1:5000/TableUser");
       usuarios= response.data.map((u:any)=>({
         ...u,
-        // combertidor del rol en texto
+        // convertidor del rol en texto
         rolTxt:u.rol=== 1? "Administrador" : u.rol===2 ? "Usuario" : "Profesional",
       }));
       console.log("usuarios cargados:",usuarios);
@@ -26,11 +27,11 @@
     }
   };
   // actualizar usuarios
-  const preEditar=(user:any)=>{userEdit={...user}}; 
+  const preEditar=(user:any)=>{userEdit={...user}};
 
   const Actualizar= async()=>{
     try{
-      await axios.put(`http://127.0.0.1:5000/editUser/${userEdit.id}`,userEdit);
+      await axios.put(`http://127.0.0.1:5000/editUser/${userEdit.id}`,id);
       alert("usuario actualizado correctamente");
       userEdit=null;
       await Init_Data();
@@ -47,7 +48,7 @@
       userEliminar = null;
       await Init_Data();
     }catch(err){
-      console.error("Error al eliminar:",err);
+console.error("Error al eliminar:",err);
     }
   };
 
@@ -83,11 +84,11 @@
           <td>{user.password}</td>
           <td>{user.cell}</td>
           <td>{user.rolTxt}</td>
-          <td> 
-            <button onclick={()=>preEditar(user)} class="btn btn-warning btn-sm ms-3" data-bs-toggle="modal"data-bs-target="#Editar"aria-label="Editar usuario">
+          <td>
+            <button onclick={Actualizar(user.id)} class="btn btn-warning btn-sm ms-3" data-bs-toggle="modal" data-bs-target="#Editar" aria-label="Editar usuario">
               Editar
             </button>
-            <button onclick={()=>userEliminar=user} class="btn btn-danger btn-sm ms-3" data-bs-toggle="modal"data-bs-target="#Editar"aria-label="Editar usuario">
+            <button onclick={Eliminar(user.id)} class="btn btn-danger btn-sm ms-3" data-bs-toggle="modal" data-bs-target="#Editar" aria-label="Editar usuario">
               Eliminar
             </button>
           </td>
@@ -95,7 +96,7 @@
       {/each}
     </tbody>
   </table>
-      <!--Modal para confirmar la eliminacion de un usuario--> 
+      <!--Modal para confirmar la eliminacion de un usuario-->
   <div class="modal fade" tabindex="-1" id="Eliminar"><!--div2-->
     <div class="modal-dialog"><!--div2.1-->
         <div class="modal-content"><!--div2.2-->
