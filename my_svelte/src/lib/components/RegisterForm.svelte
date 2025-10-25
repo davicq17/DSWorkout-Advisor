@@ -62,7 +62,7 @@
                 rol: rolI,
                 status: 1,
                 especialidad: especialidadI,
-            },
+            }, 
           )
           .then(function(response){
             alert("registro exitoso");
@@ -187,7 +187,6 @@
             </div>
             <div class="col-md-6 form-floating mb-3">
                 <select bind:value={rolI} class="form-select" name="role">
-                    <!--onchange="Speciality()"-->
                     <option value="0" selected></option>
                     {#if tipoRegistro==="admin"}
                         <option value="1" style:display={rolregist}>Administrador</option>

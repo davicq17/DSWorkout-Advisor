@@ -1,0 +1,9 @@
+#ignora el entorno de pyhton 
+api/.venv/
+
+#mignora dependencias del svelte
+my_svelte/node_modules
+
+#Ignora archivos de coplicaión 
+__pycache__/
+*.pyc

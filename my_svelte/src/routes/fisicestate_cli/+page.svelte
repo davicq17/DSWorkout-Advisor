@@ -1,50 +1,50 @@
- <script>
-  const RegistroFisicState=()=>{
-    ageI=document.getElementById("inputage").value
-    weightI=document.getElementById("inputpeso").value
-    heightI=document.getElementById("inputAltura").value
-    Fr_trainI=document.getElementById("inputfr_train").value
-    durationI=document.getElementById("inputDuration_sesion").value
-    goalI=document.getElementById("inputObjetivo").value
-    equipment=document.getElementById("inputEquipamiento").value
-    restrictionsI=document.getElementById("inputRestricción_alimenticia").value
+ <script lang="ts">
+  import axios from "axios";
 
-    genderI=document.getElementById("M").checked==true?"M":"F";
-    console.log(document.getElementById("M").checked)
-    if(ageI=="" || weightI=="" || heightI=="" || Fr_trainI=="" || goalI=="" ){
-        alert("Todos los campos son obligatorios");
-        return;
-    }else{
-        token=localStorage.getItem("token");
-        axios({
-            method:'GET',
-            url:'http://127.0.0.1:5000/verify_token/'+token
-        }).then(function(response){
-            user=response.data
-    
-            axios({
-                method:'POST',
-                url:"http://127.0.0.1:5000/regisFisicState",
-                data:{
-                    id:user.id,
-                    age:ageI,
-                    gender:genderI,
-                    height:heightI,
-                    weight:weightI,
-                    Fr_train:Fr_trainI,
-                    duration:durationI,
-                    goal:goalI,
-                    equipment:equipment,
-                    restrictions:restrictionsI
-                }
-            }).then(function(response){
-            alert(response.data.informacion)
-            window.location.href="/fit_intUser"
-            }).catch(err => console.log('Error: ', err))
-    }).catch((err) => console.log("Error: ", err));
+  // variables reactivas 
+  const {token}=$props(); // el rol y el token vienen del servidor
+  let ageI:any= $state(0);
+  let genderI=$state("");
+  let weightI:any= $state(0);
+  let heightI:any= $state(0); 
+  let Fr_trainI=$state("");
+  let durationI=$state("");
+  let goalI=$state("");
+  let equipment=$state("");
+  let restrictionsI=$state("");
+  // arreglo reactivo para resivr usuarios 
+  let user:any =$state(null);
+  // estado de carga 
+  let isLoading =$state(false);
+  const RegistroFisicState= async ()=>{
+    if(!ageI || !weightI || !heightI || !Fr_trainI || !goalI ){
+        return alert("VERIFICAR CAMPOS VACÍOS");
+      }
+      isLoading=true;
+      try{
+        const response = await axios.get(`http://127.0.0.1:5000/verify_token/${token}`)
+          user =response.data;
 
+          const res = await axios.post("http://127.0.0.1:5000/regisFisicState",{
+            id:user.id,
+            age:ageI,
+            gender:genderI,
+            height:heightI,
+            weight:weightI,
+            Fr_train:Fr_trainI,
+            duration:durationI,
+            goal:goalI,
+            equipment:equipment,
+            restrictions:restrictionsI
+          })
+            alert(res.data.informacion)
+            window.location.href="/fisicestate_cli"
+      }catch(err){
+        console.log("Error: ", err);
+      }finally{
+        isLoading=false;
+      }
     }
-}
  </script>
  <!--contenedor de todo-->
     <div class="container col-lg-7 col-sm-10  my-5">
@@ -52,29 +52,26 @@
         <h3 class="mb-5 h3 fw-bold text-center">Estado Fisico</h3>
       </div>
         <form class="row g-3">
-              <div class=" input-group">
-              <div class="col-sm-12 col-md-6 ">
-                <input type="number" class="form-control" id="inputage" placeholder="Edad">
-              </div>
-              
-              <div class="form-check form-check-inline ps-5">
-                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="M" value="M" checked>
-                <label class="form-check-label" for="M">M</label>
-              </div>
-              <div class="form-check form-check-inline ps-5">
-                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="F" value="F">
-                <label class="form-check-label" for="F">F</label>
-              </div>
-            </div>
+                <div class="col-sm-12 col-md-6 ">
+                 <input bind:value={ageI} type="number" class="form-control" placeholder="Edad">
+                </div>
+                <div class="col-sm-12 col-md-6">
+                  <select bind:value={genderI} class="form-select">
+                    <option selected>Genero</option>
+                    <option value="M">Masculino</option>
+                    <option value="F">Femenino</option>
+                  </select>
+                </div>
+  
             <div class="col-md-6">
-              <input type="number" class="form-control" id="inputpeso" placeholder="Peso(kg)">
+              <input bind:value={weightI} type="number" class="form-control" placeholder="Peso(kg)">
             </div>
             <div class="col-sm-12 col-md-6">
-              <input type="number" class="form-control" id="inputAltura" placeholder="Altura(m)">
+              <input bind:value={heightI} type="number" class="form-control" placeholder="Altura(m)">
             </div>
             <div class="col-md-12">
               <label for="inputfr_train" class="form-label">¿Con que fecuencia realiza actividad fisica?</label>
-              <select id="inputfr_train" class="form-select">
+              <select bind:value={Fr_trainI} id="inputfr_train" class="form-select">
                 <option value="Nunca" selected>Nunca</option>
                 <option value="ocacional">Ocasional (1-2 veces a la semana)</option>
                 <option value="Regular">Regular(3-4 veces a la semana)</option>
@@ -83,7 +80,7 @@
             </div>
             <div class="col-md-12">
               <label for="inputDuration_sesion">¿Cúanto dura su sesión de ejercicio tipica?</label>
-              <select id="inputDuration_sesion" class="form-select">
+              <select bind:value={durationI} id="inputDuration_sesion" class="form-select">
                 <option value="0" selected>0</option>
                 <option value="1-2h">1-2 horas</option>
                 <option value="3-4h">3-4 horas</option>
@@ -92,7 +89,7 @@
             </div>
             <div class="col-md-12">
               <label for="inputObjetivo" class="form-label">Objetivo</label>
-              <select  id="inputObjetivo" class="form-select">
+              <select bind:value={goalI}  id="inputObjetivo" class="form-select">
                 <option value="" selected></option>
                 <option value="Mantener salud" >Mantener salud</option>
                 <option value="Perder peso">Perder peso</option>
@@ -101,20 +98,20 @@
             </div>
             <div class="col-md-12">
               <label for="inputEquipamiento">¿Con qué equipamiento u herramienta cuenta, que lo ayude a ejercitarce?</label>
-              <textarea  id="inputEquipamiento" class="form-control" placeholder="escriba su equipamiento o si asiste a un gimnasio"></textarea>
+              <textarea bind:value={equipment} id="inputEquipamiento" class="form-control" placeholder="escriba su equipamiento o si asiste a un gimnasio"></textarea>
             </div>
             <div class="col-md-12">
               <label for="inputRestricción_alimenticia" class="form-label">Restricciones alimenticias</label>
-              <input type="text" class="form-control" id="inputRestricción_alimenticia">
+              <input bind:value={restrictionsI} type="text" class="form-control" id="inputRestricción_alimenticia">
             </div>
             <div class=" col-6 mt-3 d-flex container" >
               
             <div class="col-3 me-5">
-              <a  class="btn btn-primary" >Enviar</a>
-              <!--onclick="RegistroFisicState()"-->
+              <button onclick={RegistroFisicState} class="btn btn-primary" 
+              disabled={isLoading}>{isLoading? "Enviando...":"Enviar"}</button>
             </div>
             <div class="col-3">
-              <a type="submit" class="btn btn-danger">cancelar</a>
+              <a  class="btn btn-danger" href="/intuser_cli">cancelar</a>
             </div>
           </div>
         </form>
