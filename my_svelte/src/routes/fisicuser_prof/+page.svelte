@@ -1,33 +1,51 @@
-<script>
-  //const tabla=document.querySelector("#tablab tbody");
+<script lang="ts">
+  import { onMount } from "svelte";
+  import DataTable from "datatables.net-dt";
+  import "datatables.net-dt/css/jquery.dataTables.css";
+	import axios from "axios";
 
-let tabla = new DataTable('#tablab', {
-  paging:false,
-  scrollY:400
-});
-const Init_Data=()=>{
-    botones=`<a id="evaluar" class="btn btn-success"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard2-check-fill" viewBox="0 0 16 16">
-  <path d="M10 .5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5.5.5 0 0 1-.5.5.5.5 0 0 0-.5.5V2a.5.5 0 0 0 .5.5h5A.5.5 0 0 0 11 2v-.5a.5.5 0 0 0-.5-.5.5.5 0 0 1-.5-.5"/>
-  <path d="M4.085 1H3.5A1.5 1.5 0 0 0 2 2.5v12A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 12.5 1h-.585q.084.236.085.5V2a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 4 2v-.5q.001-.264.085-.5m6.769 6.854-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708.708"/>
-</svg></a>`
-    axios({
-        method: 'GET',
-        url: 'http://127.0.0.1:5000/TableFisic',
-        
-      }).then(function (response) {
-       
-        //console.log(response)
-            for (let i = 0; i < response.data.length; i++) {
-                    
-              tabla.row.add([response.data[i].id, response.data[i].name, response.data[i].surname, response.data[i].age, response.data[i].gender, response.data[i].height, response.data[i].weight, response.data[i].Fr_Train,botones]).draw();
-               
-            } 
-              
-      }).catch(err => console.log('Error: ', err))
+  let tabla:any;
+  let usuarios:any[]= $state([]);
 
+  // preparación para evaluar al usuario
+  const evaluarUsuario= async(id:number)=>{
+    try{
+      const response = await axios.get(`http://127.0.0.1:5000/FisicById/${id}`);
+      const datos = response.data;
+      // se guardan los datos del usuario en el localstorage
+      localStorage.setItem("datos",JSON.stringify(datos));
+      // manda al componente de evaluar
+      window.location.href="/evaluar_prof";
+    }catch(err){
+      console.error("Error :",err);
     }
+  }
 
-Init_Data();
+  const Init_Data= async ()=>{
+    try{
+      const response = await axios.get("http://127.0.0.1:5000/TableFisic");
+      //console.log(response)
+       usuarios=response.data;
+    }catch(err){
+      console.log('Error: ',err);
+    }
+  }
+
+  // carga la funcion antes de qeu cargue el DOM
+  onMount(async()=>{
+     await Init_Data();  
+  })
+
+  $effect(()=>{
+    if(usuarios.length > 0 && !tabla){
+      // creamos la tabla
+      tabla= new DataTable("#tablab",{
+        paging:false,
+        scrollY:"400px"
+      })
+    }
+  })
+  
 </script>
 <!--contenedor de todo-->
       <div class="container col-md-11 col-sm-11 my-5">
@@ -49,7 +67,26 @@ Init_Data();
             </tr>
             </thead>
             <tbody>
-              
+              {#each usuarios as user }
+                <tr>
+                  <td>{user.id}</td>
+                  <td>{user.name}</td>
+                  <td>{user.surname}</td>
+                  <td>{user.age}</td>
+                  <td>{user.gender}</td>
+                  <td>{user.height}</td>
+                  <td>{user.weight}</td>
+                  <td>{user.Fr_train}</td>
+                  <td>
+                    <button aria-label="evaluar" class="btn btn-success" onclick={() => evaluarUsuario(user.id)}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"class="bi bi-clipboard2-check-fill" viewBox="0 0 16 16">
+                        <path d="M10 .5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5.5.5 0 0 1-.5.5.5.5 0 0 0-.5.5V2a.5.5 0 0 0 .5.5h5A.5.5 0 0 0 11 2v-.5a.5.5 0 0 1-.5-.5.5.5 0 0 0-.5-.5"/>
+                        <path d="M4.085 1H3.5A1.5 1.5 0 0 0 2 2.5v12A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 12.5 1h-.585q.084.236.085.5V2a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 4 2v-.5q.001-.264.085-.5m6.769 6.854-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708.708"/>
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+              {/each}
             </tbody>
           </table>
       </div>
