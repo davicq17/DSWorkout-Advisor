@@ -1,177 +1,173 @@
-<script>
+<script lang="ts">
+	import axios from "axios";
+  import { onMount } from "svelte";
+  import DataTable from "datatables.net-dt";
+  import "datatables.net-dt/css/jquery.dataTables.css";
+// variables de ejercicios
+  let tabla:any;
+  let ejercicios:any[]=[];
+  let ejerciciosSeleccionados:{id:string,nombre:string}[]=$state([]);
+  let totalDuracion = $state(0);
+
+  let EName = $state("");
+  let EType = $state("");
+  let EDescription = $state("");
+  let EEquipment= $state("");
+  let ELevel= $state("");
+// variables de rutinas
+ const {token}=$props();// el token vienen del servidor
+ let tablaR:any;
+ let rutinas:any[]=$state([]);
+
+ let nombreR=$state("");
+ let descripcionR=$state("");
+ let nivleR =$state("");
+
   //CARGA DE TABLAS PARA INTERFAZ DE PROFESIONAL
-const Init_Data =() =>{
-    CargarEjercicios()
-    CargarRutinasBIG()
+  onMount(() =>{
+      CargarEjercicios()
+      CargarRutinasBIG()
+  });
 
-}
-const CargarEjercicios=()=>{
-    //TABLA DE EJERCICIOS PARA AGGREGAR A UNA RUTINA
-    axios.get('http://127.0.0.1:5000/ejercicioTabla')
-    .then(function(response){
-        botones1=`<buttom type="buttom" class="btn btn-success btn-sm" data-bs-target="#Agregar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
-  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
-</svg></Buttom> <buttom class= "btn btn-primary btn-sm" data-bs-target="#Información"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
-  <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2"/>
-</svg></buttom>`
-        data= response.data;
-        ArregloDataPag2=[]
-        for(let i = 0; i< data.length; i++){
-            ArregloDataPag2.push([data[i].id,data[i].nombre,data[i].tipo,data[i].nivel,botones1]);
-        }
-        let tabla = new DataTable('#tablaWorkout_routine', {
-            paging:false,
-            scrollY:200,
-            data:ArregloDataPag2
-        });
-        
-    }).catch(err=> console.log('error:', err))
-}
-const CargarRutinasBIG=()=>{
-    axios.get('http://127.0.0.1:5000/getRoutines')
-    .then(function(response){
-        botones2=`<button class="btn btn-danger btn-sm">Delete</button>`
-        data= response.data;
-        ArregloRutinas=[]
-        for(let i = 0; i< data.length; i++){
-            ArregloRutinas.push([data[i].Autor,data[i].id_routine,data[i].nombre,data[i].descripcion,data[i].duracion,data[i].nivel,botones2])
-        }
-        let tablaR = new DataTable('#tablaR', {
-            paging:false,
-            scrollY:500,
-            data:ArregloRutinas
-        });
-    }).catch(err=> console.log('error:', err))
-}
-Init_Data();
-// tomamos el tabla de los ejercicios
-tablab= document.getElementById('tablaWorkout_routine');
-// verificamos que no este vacia
-if(tablab!=null){
-    // creamos el evento de click
-    tablab.addEventListener('click',function(e){
-        e.stopPropagation();
-        // se verifica que el elemento clicado tenga la clase correcta para evitar errores
-        if(e.target.className=='btn btn-primary btn-sm'){
-            e.stopPropagation();
-            const id = e.target.parentNode.parentNode.children[0].textContent;
-            axios.get('http://127.0.0.1:5000/WorkoutById/'+id) 
-            .then(function(response){
-                conten={
-                    name:response.data.nombre,
-                    desc:response.data.desc,
-                    type:response.data.type,
-                    equipment:response.data.equipment,
-                    level:response.data.level
-                }
-                sessionStorage.setItem('ejercicio', JSON.stringify(conten));
-                // cargamos la información
-                CargarInformacion(conten);
-            })
-        }
-    })
-}
-const CargarInformacion= (contenido) =>{
-    //let contenido= JSON.parse(sessionStorage.getItem('ejercicio'))
-    //if(contenido!=null){
-        console.log(contenido)
-        document.getElementById('predicName').value= contenido.name
-        document.getElementById('predicType').value= contenido.type
-        document.getElementById('predicDescription').value= contenido.desc
-        document.getElementById('predicEquipment').value= contenido.equipment
-        document.getElementById('predicLevel').value= contenido.level
-   // }
-}
-// función para agregar ejercicios a la rutina
-let ejerciciosSeleccionados=[];
-let totalDuracion= 0;
-if(tablab!=null){
-    // creamos el evento del click del segundo boton
-    tablab.addEventListener('click',function(e){
-        e.stopPropagation();
-        // verificamos que el elemeto clicado sea el segundo boton
-        if(e.target.className == 'btn btn-success btn-sm'){
-            e.stopPropagation();
-            const id = e.target.parentNode.parentNode.children[0].textContent;
-            const nombre = e.target.parentNode.parentNode.children[1].textContent;
-            // verificamos si el ejercicio ya esta en la lista de la rutina
-            console.log(ejerciciosSeleccionados.includes(id))
-            if(!ejerciciosSeleccionados.includes(id)){
-                ejerciciosSeleccionados.push(id);
-                // se actualiza la lista de ejercicios
-                let listaRutina= document.getElementById('listaRutina');
-                let lista= document.createElement('li');
-                lista.innerText= nombre;
-                listaRutina.appendChild(lista);
-                // se agrega el id al sessionStorage
-                sessionStorage.setItem('Ejercicios',ejerciciosSeleccionados.join(','))
+  // FUNCIONES DE EJERCICIOS
+  const CargarEjercicios = async ()=>{
+    try{
+      // realizamos la petición
+      const response = await axios.get('http://127.0.0.1:5000/ejercicioTabla')
+      ejercicios= response.data;
+      if(tabla) tabla.destroy?.();
+      tabla = new DataTable('#tablaWorkout_routine',{
+        data: ejercicios.map(e =>[
+          e.id,
+          e.nombre,
+          e.tipo,
+          e.nivel,
+          `<button type="button" class="btn btn-success btn-sm" data-id="${e.id}" data-name="${e.nombre}" data-bs-target="#Agregar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+              <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
+              </svg></button> <button class= "btn btn-primary btn-sm" data-id="${e.id}" data-bs-target="#Información"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
+              <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2"/>
+            </svg></button>`
+        ]),
+        paging:false,
+        scrollY:"500px"
+      })
+      document.querySelector('#tablaWorkout_routine')?.removeEventListener("click",(e:Event)=>{
+        ClickEjercicio(e as MouseEvent)
+      });
+      // se escuchan los eventos de click
+      document.querySelector("#tablaWorkout_routine")?.addEventListener("click",(e: Event)=>{
+        ClickEjercicio(e as MouseEvent);
+      });
 
-                // se hace la consulta para obtener la duración del ejercicio
-                axios.get('http://127.0.0.1:5000/WorkoutById/'+id) 
-                .then(function(response){
-                    duracionEjercicio = response.data.duration;
-                    console.log(duracionEjercicio);
-                    // se suma la duracion del nuevo ejercicio
-                    totalDuracion += duracionEjercicio;
-                    // se actualiza el input del total de la duracion de la rutina
-                    document.getElementById('txtduration').value = totalDuracion;               
-            }   ).catch(err=> console.log('error:', err))
-            }else{
-                alert('El ejercicio ya se encuentra en la lista de la rutina')
-            }
-        }
-    })
-}
+    }catch(err){
+      console.error("Error cargando ejercicios:",err);
+    }
+  }
+// se maneja el evento del click
+  const ClickEjercicio = (e:MouseEvent)=>{
+    const target = e.target as HTMLElement;
+    const id = target.dataset.id || target.dataset.info;
+    const nombre= target.dataset.name;
+    if(!id)return;
+    // verificamos sobre cual boton se hizo click
+    if(target.classList.contains("btn-success")){
+      if(!nombre)return;
+      // agrega el ejercicio a la rutina
+      AgregarEjercico(id,nombre);
+    }else if(target.classList.contains("btn-primary")){
+      //muestra la información del ejercicio  
+      CargarInformacion(id);
+    }
+  }
 
-mensj="";
-// se piden los datos del formulario
-const Registrar_rutina = () =>{
-    axios({
-        method:'GET',
-        url: 'http://127.0.0.1:5000/verify_token/'+localStorage.getItem('token')
-        }).then(function(response){
-        creadorI= response.data.id;
-        nombreRutinaI= document.getElementById('txtnombre').value;
-        descripRutinaI=document.getElementById('txtdescripcion').value;
-        duracionRutinaI=document.getElementById('txtduration').value;
-        nivelRutinaI=document.getElementById('txtnivel').value;
-        ejerciciosI = sessionStorage.getItem('Ejercicios')
-        axios({
-            method:'POST',
-            url: 'http://127.0.0.1:5000/regisRutina',
-            data:{
-                creador:creadorI,
-                nombre:nombreRutinaI,
-                descripcion:descripRutinaI,
-                duracion:duracionRutinaI,
-                nivel:nivelRutinaI,
-                ejercicios:ejerciciosI
-            }
-        }).then(function(response){
-            alert('Rutina registrada correctamente');
-            if(response.data.informacion=='Registro de runtina Exitoso'){
-                console.log('Rutina registrada correctamente');
-                Cancelar();
-            }
-        }).catch(err=> console.log('error:', err))
-    }).catch(err=> console.log('error:', err))
-    
-}
-const Cancelar = () =>{
-    // limpiamos los inputs
+  const CargarInformacion = async (id: string) => {
+    try {
+      const { data } = await axios.get(`http://127.0.0.1:5000/WorkoutById/${id}`);
+      EName = data.nombre;
+      EType = data.type;
+      EDescription = data.desc;
+      EEquipment = data.equipment;
+      ELevel = data.level;
+    } catch (err) {
+      console.error("Error al cargar información:", err);
+    }
+  };
+
+  const AgregarEjercico =  async (id:string, nombre:string)=>{
+    // verica que el ejercicio no este en la rutina
+    if(ejerciciosSeleccionados.some(e=> e.id === id)){
+      alert("El ejerccio ya está en la lista");
+      return;
+    }
+    // se actualiza la lista de la rutina
+    ejerciciosSeleccionados = [...ejerciciosSeleccionados,{id, nombre}];
+
+    // se actualiza la duración de la rutina
+    try{
+      const {data}= await axios.get(`http://127.0.0.1:5000/WorkoutById/${id}`);
+      totalDuracion += data.duration;
+    }catch(err){
+      console.log("error :",err)
+    }
+
+  }
+
+  // FUNCIONES DE RUTINAS
+  const CargarRutinasBIG= async ()=>{
+    try{
+      // realizamos la petición de las rutinas 
+      const respon = await axios.get('http://127.0.0.1:5000/getRoutines');
+      rutinas= respon.data;
+      if(tablaR) tablaR.destroy?.();
+      tablaR = new DataTable('#tablaR',{
+        paging:false,
+        scrollY:"500px",
+        data: rutinas.map(r=>[
+          r.Autor,
+          r.id_routine,
+          r.nombre,
+          r.descripcion,
+          r.duracion,
+          r.nivel,
+          `<button class="btn btn-danger btn-sm">Delete</button>`
+        ])
+      })
+    }catch(err){
+      console.log("error:",err)
+    }
+  }
+
+  const RegistrarRutina = async()=>{
+    try{
+      // se define el creador de la rutina
+      const verify = await axios.get(`http://127.0.0.1:5000/verify_token/${token}`);
+      const creadorR= verify.data.id;
+      
+      await axios.post("http://127.0.0.1:5000/regisRutina",{
+          creador: creadorR,
+          nombre: nombreR,
+          descripcion: descripcionR,
+          duracion: totalDuracion,
+          nivel: nivleR,
+          ejercicios: ejerciciosSeleccionados.map(e=> e.id).join(";"), 
+      });
+
+      alert("Rutina registrada correctamente.");
+      cancelar();
+      CargarRutinasBIG();
+    }catch(err){
+      console.log('error :',err);
+    }
+  }
+
+  const cancelar = ()=>{
+    nombreR= "";
+    descripcionR="";
+    nivleR="";
+    ejerciciosSeleccionados = [];
     totalDuracion=0;
-    ejerciciosSeleccionados=[];
-    document.getElementById('txtnombre').value='';
-    document.getElementById('txtdescripcion').value='';
-    document.getElementById('txtduration').value='';
-    document.getElementById('txtnivel').value='';
-    sessionStorage.removeItem('Ejercicios');
-    // se vacia la lista de ejercicios seleccionados
-    document.getElementById('listaRutina').innerHTML='';
-    // se vacia el input del total de la duracion de la rutina
-    document.getElementById('txtduration').value = 0;
-}
 
+  }
 </script>
 <div class="container-fluid col-lg-10 px-4"><!--principal-->
   <h3 class="mt-3">RUTINAS</h3>
@@ -212,19 +208,19 @@ const Cancelar = () =>{
           <div class="col-lg-6 col-md-6 "><!--div9-->
             <div class="mb-2"><!--div9.1-->
               <label for="txtnombre" class="form-label"><b>Nombre</b></label>
-              <input type="text" class="form-control" id="txtnombre" required>
+              <input bind:value={nombreR} type="text" class="form-control" id="txtnombre" required>
             </div><!--div9.1-->
             <div class="mb-2"><!--div9.2-->
               <label for="txtdescripcion" class="form-label"><b>Descripción</b></label>
-              <textarea name="" id="txtdescripcion" class="form-control"></textarea required>                               
+              <textarea bind:value={descripcionR} name="" id="txtdescripcion" class="form-control"></textarea required>                               
             </div><!--div9.2-->
             <div class="mb-2"><!--div9.3-->
               <label for="txtduration" class="form-label"><b>Duracción (min)</b></label>
-              <input type="number" class="form-control" id="txtduration" required placeholder="00 min">
+              <input type="number" class="form-control" bind:value={totalDuracion} id="txtduration" required placeholder="00 min" readonly>
             </div><!--div9.3-->
             <div class="mb-2"><!--div9.4-->
               <label for="txtnivel" class="form-label"><b>Nivel</b></label>
-              <select id="txtnivel" class="form-control">
+              <select bind:value={nivleR} id="txtnivel" class="form-control">
                 <option selected value="Principiante">Principiante</option>
                 <option value="Intermedio">Intermedio</option>
                 <option value="Avanzado">Avanzado</option>
@@ -232,13 +228,15 @@ const Cancelar = () =>{
             </div><!--div9.4--> 
             <div class="mb-2"><!--div9.5-->
               <h4><b>Ejercicios</b></h4>
-              <ul id="listaRutina"></ul>
+              <ul id="listaRutina">
+                {#each ejerciciosSeleccionados as ejerc }
+                  <li>{ejerc.nombre}</li>
+                {/each}
+              </ul>
             </div><!--div9.5-->                                   
             <div class="mb-2"><!--div9.6-->
-              <button type="button" class="btn btn-dark" >Cancelar</button>
-                  <!--onclick="Cancelar()"-->
-              <button type="button" class="btn btn-success">Agregar</button>
-                  <!--onclick="Registrar_rutina()""-->
+              <button onclick={cancelar} type="button" class="btn btn-dark" >Cancelar</button>
+              <button onclick={RegistrarRutina} type="button" class="btn btn-success">Agregar</button>
             </div><!--div9.6-->
           </div><!--div9-->
                   <!--ejercicios--> 
@@ -270,34 +268,34 @@ const Cancelar = () =>{
                 <div class="mb-2 row"><!--div11.4-->
                   <div class="col-lg-6 col-md-6 col-sm-12"><!--div11.4.1-->
                     <label for="predicName" class="form-label"><b>Ejercicio</b></label>
-                    <input type="text" class="form-control" id="predicName" readonly>
+                    <input bind:value={EName} type="text" class="form-control" id="predicName" readonly>
                   </div><!--div11.4.1-->
                   <div class="col-lg-6 col-md-6 col-sm-12"><!--div11.4.2-->
                     <label for="predicType" class="form-label"><b>Tipo</b></label>
-                    <input type="text" class="form-control" id="predicType" readonly>
+                    <input bind:value={EType} type="text" class="form-control" id="predicType" readonly>
                   </div><!--div11.4.2-->
                 </div><!--div11.4-->
                 <div class="mb-2 row"><!--div11.5-->
                   <div class="col-lg-12 col-md-12 col-sm-12"><!--div11.5.1-->
                     <label for="predicDescription"><b>Descripción</b></label>
-                    <textarea name="" id="predicDescription" class="form-control"></textarea readonly> 
+                    <textarea bind:value={EDescription} name="" id="predicDescription" class="form-control" readonly></textarea> 
                   </div><!--div11.5.1-->
                 </div><!--div11.5-->
                 <div class="mb-2 row"><!--div11.6-->
                   <div class="col-lg-6 col-md-6 col-sm-12"><!--div11.6.1-->
                     <label for="predicEquipment" class="form-label"><b>Equipamiento</b></label>
-                    <input type="text" class="form-control" id="predicEquipment" readonly>
+                    <input bind:value={EEquipment} type="text" class="form-control" id="predicEquipment" readonly>
                   </div><!--div11.6.1-->
                   <div class="col-lg-6 col-md-6 col-sm-12"><!--div11.6.2-->
                     <label for="predicLevel" class="form-label"><b>Nivel</b></label>
-                    <input type="text" class="form-control" id="predicLevel" readonly>
+                    <input bind:value={ELevel} type="text" class="form-control" id="predicLevel" readonly>
                   </div><!--div11.6.2-->
                 </div><!--div11.6-->
               </form>
              </div><!--div11-->
           </div><!--div10-->
          </div><!--div8-->
-      </div><!--div7-->
+      </div><!--div7--> 
     </div><!--div5-->          
     </div><!--div4-->  
   </div><!--div2-->                 
