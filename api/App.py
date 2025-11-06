@@ -101,7 +101,7 @@ def FisicById(id):
         cur.execute('select usuarios.id ,usuarios.name, usuarios.surname, cliente.age ,cliente.gender, cliente.height, cliente.weight, cliente.fr_train, cliente.restrictions, cliente.duration_exerss, cliente.goal, cliente.equipment from (usuarios join cliente on(usuarios.id = cliente.id_usuario and usuarios.status = 1 AND id = %s))', (id,))
         rv = cur.fetchone()
         cur.close()
-        content = {'id': rv[0], 'name': rv[1], 'surname': rv[2], 'age': rv[3],'gender': rv[4],'height': rv[5],'weight': rv[6],'Fr_Train':rv[7],'restrictions':rv[8],'duration':rv[9],'goal':rv[10],'equipment':rv[11]}
+        content = {'id': rv[0], 'name': rv[1], 'surname': rv[2], 'age': rv[3],'gender': rv[4],'height': rv[5],'weight': rv[6],'fr_Train':rv[7],'restrictions':rv[8],'duration':rv[9],'goal':rv[10],'equipment':rv[11]}
         return jsonify(content)
     except Exception as e:
         print(e)

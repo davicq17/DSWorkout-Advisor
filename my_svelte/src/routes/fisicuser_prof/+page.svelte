@@ -3,6 +3,7 @@
   import DataTable from "datatables.net-dt";
   import "datatables.net-dt/css/jquery.dataTables.css";
 	import axios from "axios";
+	import { goto } from "$app/navigation";
 
   let tabla:any;
   let usuarios:any[]= [];
@@ -15,7 +16,7 @@
       // se guardan los datos del usuario en el localstorage
       localStorage.setItem("datos",JSON.stringify(datos));
       // manda al componente de evaluar
-      window.location.href="/evaluar_prof";
+      goto("/evaluar_prof");
     }catch(err){
       console.error("Error :",err);
     }

@@ -4,30 +4,36 @@
   import axios from "axios";
   import DataTable from "datatables.net-dt";
   import "datatables.net-dt/css/jquery.dataTables.css";
-	import { parse } from "path";
+  import type * as DataTables from "datatables.net-dt";
+	import { goto } from "$app/navigation";
 
   // estructura para resivir los datos 
   interface Datos{
+    id:number;
     name: string;
     surname: string;
     age:number;
     gender:string;
     height:number;
     weight:number;
-    Fr_train:string;
+    fr_train:string;
     duration:number;
     goal:string;
     equipment:string;
     restrictions:string;
   }
+  // estrucutra de la rutina
+  interface Rutina{
+    id_routine:number;
+  }
   // variables reactivas de carga de información 
   let contenido:Datos | null = $state(null);
-  let c_nombre= $state("");
+  let C_nombre= $state("");
   let C_apellido= $state("");
   let C_age = $state(0);
   let C_genero=$state("");
   let C_altura=$state(0);
-  let C_peso= $state();
+  let C_peso= $state(0);
   let C_fr_train= $state("");
   let C_Duration_sesion =$state(0);
   let C_objetivo= $state("");
@@ -35,7 +41,7 @@
   let C_Restriccion = $state("");
 
   // variables tabla de ejercicios
-  let tablaPD:any;
+  let tablaPD:DataTables.Api | null = null;
   let ejercicios:any[]=[];
   let ejerciciosSeleccionados:{id:string,nombre:string}[]=$state([]);
   let totalDuracion = $state(0);
@@ -52,6 +58,11 @@
   let txtdescripcionR=$state("");
   let txtnivelR =$state("");
 
+  // variables para asignar rutina
+  let tablaAR:any;
+  let Rutinas:any[]=[];
+  let rutinaAsignada=$state("");
+
   // variables de predicción 
   let predic = $state("");
   let predecirBool= $state(false);
@@ -59,6 +70,12 @@
   let P_bodypart = $state("");
   let P_type = $state("");
   let P_level =$state("");
+
+  // variables envio de DIagnostico
+  let diagnostico = $state("");
+  let pro= $state("");
+  let cliente:Datos | null = $state(null);
+  let rutina:Rutina|null = $state(null);
   // carga cuando ya estse renderizado el DOM
   onMount(()=>{
     CargarInfo();
@@ -67,35 +84,41 @@
   const CargarInfo= ()=>{
     const datos = localStorage.getItem('datos');
    if(datos){
-      contenido= JSON.parse(datos);
+      contenido= JSON.parse(datos) as Datos;
       if(contenido){
-          c_nombre= contenido.name;
+          C_nombre= contenido.name;
           C_apellido= contenido.surname;
           C_age = contenido.age;
           C_genero=contenido.gender;
           C_altura= contenido.height;
           C_peso= contenido.weight;
-          C_fr_train= contenido.Fr_train;
+          C_fr_train= contenido.fr_train;
           C_Duration_sesion =contenido.duration;
           C_objetivo= contenido.goal;
           C_Equipamiento = contenido.equipment;
           C_Restriccion = contenido.restrictions;
         }
+        CargarEjercicios();
     } else{
       alert("no hay datos seleccionados");
-      window.location.href ='/fisicuser_prof';
+      goto('/fisicuser_prof');
     }
   }
 // PREDICCÓN CON MACHINE LEARNING
 const predecir = async ()=>{
   try{
+    // Validar campos antes de enviar
+    if (!P_equipamiento || !P_bodypart || !P_type || !P_level) {
+      alert("completa todos los campos para predecir el rendimiento.");
+      return;
+    }
     const res = await axios.post("http://127.0.0.1:5000/predictWorkout",{
       equipment: P_equipamiento,
       bodypart: P_bodypart,
       type: P_type,
       level: P_level
     });
-    predic= res.data.Rating.toFixed(3);
+    predic= Number(res.data.Rating).toFixed(3);
     predecirBool=true;
   }catch(err){
     console.log("Error: ",err);
@@ -103,11 +126,11 @@ const predecir = async ()=>{
 };
   // MODAL DE RUTINA PERSONALISADA
     // FILTRO DE PREDICCIÓN 
-    const FilroPredic = async ()=>{
+    const FiltroPredic = async ()=>{
       if(predecirBool){
         try{
            // realizamos la petición con la predicción
-           const response = await axios.get(`http://127.0.0.1:5000/ejercicioFiltro${predic}`)
+           const response = await axios.get(`http://127.0.0.1:5000/ejercicioFiltro/${predic}`)
            ejercicios= response.data;
            if(ejercicios.length>0){
              if(tablaPD) tablaPD.destroy?.();
@@ -126,14 +149,10 @@ const predecir = async ()=>{
               paging:false,
               scrollY:"200px"
             })
-            document.querySelector('#tablaWorkout_Personal')?.removeEventListener("click",(e:Event)=>{
-              ClickEjercicio(e as MouseEvent)
-            });
+            const handleClick = (e: Event) => ClickEjercicio(e as MouseEvent);
+            document.querySelector("#tablaWorkout_Personal")?.removeEventListener("click", handleClick);
             // se escuchan los eventos de click
-            document.querySelector("#tablaWorkout_Personal")?.addEventListener("click",(e: Event)=>{
-              ClickEjercicio(e as MouseEvent);
-            });
-
+            document.querySelector("#tablaWorkout_Personal")?.addEventListener("click", handleClick);
            }else{
             alert("No se encontraron ejercicios con puntaje similar a "+predic);
            }
@@ -157,29 +176,27 @@ const predecir = async ()=>{
           e.nombre,
           e.tipo,
           e.rating,
-          `<button type="button" class="btn btn-success btn-sm" data-id="${e.id}" data-name="${e.nombre}" data-bs-target="#Agregar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+          `<button type="button" class="btn btn-success btn-sm" data-id="${e.id}" data-name="${e.nombre}" data-bstoggle="modal" data-bs-target="#Agregar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
               <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
-              </svg></button> <button class= "btn btn-primary btn-sm" data-id="${e.id}" data-bs-target="#Información"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
+              </svg></button> 
+              <button class= "btn btn-primary btn-sm" data-id="${e.id}" data-bs-target="#Información"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
               <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2"/>
             </svg></button>`
         ]),
         paging:false,
         scrollY:"200px",
       })
-      document.querySelector('#tablaWorkout_Personal')?.removeEventListener("click",(e:Event)=>{
-        ClickEjercicio(e as MouseEvent)
-      });
+      const handleClick = (e: Event) => ClickEjercicio(e as MouseEvent);
+      document.querySelector("#tablaWorkout_Personal")?.removeEventListener("click", handleClick);
       // se escuchan los eventos de click
-      document.querySelector("#tablaWorkout_Personal")?.addEventListener("click",(e: Event)=>{
-        ClickEjercicio(e as MouseEvent);
-      });
-
+      document.querySelector("#tablaWorkout_Personal")?.addEventListener("click", handleClick);
     }catch(err){
       console.error("Error cargando ejercicios:",err);
     }
   }
 // se maneja el evento del click
   const ClickEjercicio = (e:MouseEvent)=>{
+    e.stopPropagation();
     const target = e.target as HTMLElement;
     const id = target.dataset.id || target.dataset.info;
     const nombre= target.dataset.name;
@@ -188,9 +205,11 @@ const predecir = async ()=>{
     if(target.classList.contains("btn-success")){
       if(!nombre)return;
       // agrega el ejercicio a la rutina
+      e.stopPropagation();
       AgregarEjercico(id,nombre);
     }else if(target.classList.contains("btn-primary")){
       //muestra la información del ejercicio  
+      e.stopPropagation();
       CargarInformacion(id);
     }
   }
@@ -243,13 +262,13 @@ const predecir = async ()=>{
       });
 
       alert("Rutina registrada correctamente.");
-      cancelar();
+      Cancelar();
     }catch(err){
       console.log('error :',err);
     }
   }
 
-  const cancelar = ()=>{
+  const Cancelar = ()=>{
     txtnombreR= "";
     txtdescripcionR="";
     txtnivelR="";
@@ -258,10 +277,77 @@ const predecir = async ()=>{
 
   }
 
+  // ASIGNAR RUTINA
+  const AsignarRutina = async ()=>{
+    try{
+      // cargar las rutinas al modal de las rutinas
+      const response = await axios.get("http://127.0.0.1:5000/RutinaModal");
+      Rutinas = response.data;
+      if(tablaAR) tablaAR.destroy?.();
+      tablaAR = new DataTable('#tablaRutinas',{
+        data: Rutinas.map(r =>[
+          r.id_routine,
+          r.nombre,
+          r.ejercicios,
+          `<button id="asignar" class="btn btn-success asignar" data-id='${r.id_routine}' data-name='${r.nombre}' data-bs-dismiss="modal">Asignar</button>`
+        ]),
+        paging:false,
+        scrollY:"200px",
+      })
+      // menjo del click 
+      document.querySelector("#tablaRutinas")?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const target = e.target as HTMLElement;
+        const id = target.dataset.id;
+        const nombre = target.dataset.name;
+        if (target.classList.contains("asignar")) {
+          e.stopPropagation();
+          rutinaAsignada = nombre!;
+          sessionStorage.setItem("Rutina", JSON.stringify({ id_routine: id, nombre }));
+        }
+      });
+    }catch(err){
+      console.log("Erro :",err);
+    }
+  }
+
+  // DIAGNOSTICO
+  const EnvioDiagnostico = async ()=>{
+    if(diagnostico===""){
+      alert("Diagnostico en blanco, porfavor verifique.");
+      return
+    }
+    
+    try{
+      const response = await axios.get(`http://127.0.0.1:5000/verify_token/${token}`);
+      pro= response.data.id;
+      const datos = localStorage.getItem('datos');
+      const dataR= sessionStorage.getItem('Rutina');
+      if(datos)cliente= JSON.parse(datos) as Datos;
+      if(dataR)rutina = JSON.parse(dataR) as Rutina;
+      const date = new Date();
+      const fecha = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+      if(cliente && rutina){
+        const postRes = await axios.post('http://127.0.0.1:5000/addDiagnostico',{
+          id_cliente:cliente.id,
+          id_prof:pro,
+          fecha:fecha,
+          diagnostico:diagnostico,
+          rutina:rutina.id_routine  
+      });
+      alert(postRes.data.informacion || "Diagnostico enviado correctamente")
+      }
+      goto("/fisicuser_prof");
+      alert()
+    }catch(err){
+      console.log("Erro :",err);
+    }
+  }
+
   //VOLVER
   const volver=()=>{
     localStorage.removeItem('datos');
-    window.location.href="/fisicuser_prof"
+    goto("/fisicuser_prof")
   };
 </script>
 <div class="container col-sm-10 col-lg-8 col-md-10  my-5" ><!--principal-->
@@ -278,7 +364,7 @@ const predecir = async ()=>{
   <form class="row g-3">
     <div class="col-sm-12 col-md-6">
       <label for="inputnombre">Nombre</label>
-      <input bind:value={c_nombre} type="text" class="form-control" placeholder="Nombre" aria-label="First name" id="inputnombre" readonly>
+      <input bind:value={C_nombre} type="text" class="form-control" placeholder="Nombre" aria-label="First name" id="inputnombre" readonly>
     </div>
     <div class="col-sm-12 col-md-6">
       <label for="inputApellido">Apellido</label>
@@ -401,17 +487,15 @@ const predecir = async ()=>{
           </div>
           <div class="col-lg-6 col-md-6">
             <label for="RutinaA">Rutina Asignada</label>
-            <input type="text" id="RutinaA" class="form-control" readonly placeholder="Rutina sin asignar">
+            <input bind:value={rutinaAsignada} type="text" id="RutinaA" class="form-control" readonly placeholder="Rutina sin asignar">
           </div>
         </div><!--div3.6--> 
           <div class="col-lg-12 mt-2"><!--div3.7-->
             <button class="btn btn-primary me-2 mb-2">
-              <a data-bs-toggle="modal" data-bs-target="#Asignar" class="text-decoration-none text-white">asignar Rutina</a>
-              <!-- onclick="CargarRutinas()"-->
+              <a onclick={AsignarRutina} href="##" data-bs-toggle="modal" data-bs-target="#Asignar" class="text-decoration-none text-white">asignar Rutina</a>
             </button>
             <button  class="btn btn-success me-2 mb-2">
-              <a href="#"  class="text-decoration-none text-white">Enviar diagnostico</a>
-              <!--onclick="EnvioDiagnostico()"-->
+              <a onclick={EnvioDiagnostico} href="#"  class="text-decoration-none text-white">Enviar diagnostico</a>
             </button>
             <button class="btn btn-info me-2">
               <a data-bs-toggle="modal" data-bs-target="#rutinaPersonalizada" class="text-decoration-none text-white">Crear Rutina Personalizada</a>
@@ -455,7 +539,7 @@ const predecir = async ()=>{
             <h1 class="text-center my-1 ms-4">Nueva rutina</h1>
           </div>
           <div>
-            <button onclick={FilroPredic} class="btn btn-success my-2">Recomendacion</button>
+            <button onclick={FiltroPredic} class="btn btn-success my-2">Recomendacion</button>
             <button onclick={CargarEjercicios}  class="btn btn-secondary">Quitar Recomendacion</button>
           </div>
         </div><!--div5.1.2-->
@@ -492,7 +576,7 @@ const predecir = async ()=>{
                       </div>
                                                                     
                       <div class="mb-2">
-                        <button onclick={cancelar} type="button" class="btn btn-dark" >Cancelar</button>
+                        <button onclick={Cancelar} type="button" class="btn btn-dark" >Cancelar</button>
                           
                         <button onclick={RegistrarRutina} type="button" data-bs-dismiss="modal" class="btn btn-success" >Agregar</button>
                             
