@@ -15,7 +15,7 @@
   // pedir datos de la bd
   const Init_Data= async () =>{
     try{
-      const response = await axios.get("http://127.0.0.1:5000/TableUser");
+      const response = await axios.get("http://127.0.0.1:8000/Usuarios/TableUser");
       usuarios= response.data.map((u:any)=>({
         ...u,
         // convertidor del rol en texto

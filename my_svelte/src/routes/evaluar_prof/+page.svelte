@@ -176,7 +176,7 @@ const predecir = async ()=>{
           e.nombre,
           e.tipo,
           e.rating,
-          `<button type="button" class="btn btn-success btn-sm" data-id="${e.id}" data-name="${e.nombre}" data-bstoggle="modal" data-bs-target="#Agregar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+          `<button type="button" class="btn btn-success btn-sm" data-id="${e.id}" data-name="${e.nombre}" data-bs-toggle="modal" data-bs-target="#Agregar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
               <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
               </svg></button> 
               <button class= "btn btn-primary btn-sm" data-id="${e.id}" data-bs-target="#Información"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
@@ -197,17 +197,18 @@ const predecir = async ()=>{
 // se maneja el evento del click
   const ClickEjercicio = (e:MouseEvent)=>{
     e.stopPropagation();
-    const target = e.target as HTMLElement;
-    const id = target.dataset.id || target.dataset.info;
-    const nombre= target.dataset.name;
+    const btn = (e.target as HTMLElement | null)?.closest('button') as HTMLButtonElement | null;
+    if(!btn) return;
+    const id = btn.dataset.id;
+    const nombre= btn.dataset.name;
     if(!id)return;
     // verificamos sobre cual boton se hizo click
-    if(target.classList.contains("btn-success")){
+    if(btn.classList.contains("btn-success")){
       if(!nombre)return;
       // agrega el ejercicio a la rutina
       e.stopPropagation();
       AgregarEjercico(id,nombre);
-    }else if(target.classList.contains("btn-primary")){
+    }else if(btn.classList.contains("btn-primary")){
       //muestra la información del ejercicio  
       e.stopPropagation();
       CargarInformacion(id);
@@ -338,7 +339,6 @@ const predecir = async ()=>{
       alert(postRes.data.informacion || "Diagnostico enviado correctamente")
       }
       goto("/fisicuser_prof");
-      alert()
     }catch(err){
       console.log("Erro :",err);
     }
@@ -413,7 +413,7 @@ const predecir = async ()=>{
       <h4 class="h4 fw-bold text-center">Diagnostico</h4>
     </div><!--div3.1-->
     <div class="form-floating mb-3 col-lg-12"><!--div3.2-->
-      <textarea class="form-control" placeholder="Leave a comment here" id="diagnostico" style="height: 100px" resize="false"></textarea>
+      <textarea class="form-control" placeholder="Leave a comment here" id="diagnostico" style="height: 100px; resize:none" ></textarea>
       <label for="diagnostico">Escriba aqui su diagnostico</label>
     </div><!--div3.2-->
     <div><!--div3.3-->
@@ -494,11 +494,11 @@ const predecir = async ()=>{
             <button class="btn btn-primary me-2 mb-2">
               <a onclick={AsignarRutina} href="##" data-bs-toggle="modal" data-bs-target="#Asignar" class="text-decoration-none text-white">asignar Rutina</a>
             </button>
-            <button  class="btn btn-success me-2 mb-2">
-              <a onclick={EnvioDiagnostico} href="#"  class="text-decoration-none text-white">Enviar diagnostico</a>
+            <button onclick={EnvioDiagnostico}  class="btn btn-success me-2 mb-2 text-decoration-none text-white">
+              Enviar diagnostico
             </button>
-            <button class="btn btn-info me-2">
-              <a data-bs-toggle="modal" data-bs-target="#rutinaPersonalizada" class="text-decoration-none text-white">Crear Rutina Personalizada</a>
+            <button data-bs-toggle="modal" data-bs-target="#rutinaPersonalizada" class="btn btn-info me-2 text-decoration-none text-white">
+              Crear Rutina Personalizada
             </button>
           </div><!--div3.7-->
     </div><!--div3.3-->
