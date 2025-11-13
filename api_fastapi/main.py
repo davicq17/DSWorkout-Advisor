@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .routes import usuarios
+from .routes import login
 
 from api_fastapi.db import get_conn
 
@@ -17,6 +18,8 @@ app.add_middleware(
 
 #RUTAS
 app.include_router(usuarios.router);
+app.include_router(login.router);
+
 
 @app.get("/")
 def read_root():
