@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+qfrom fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api_fastapi.routes import usuarios
 from api_fastapi.db import get_conn
