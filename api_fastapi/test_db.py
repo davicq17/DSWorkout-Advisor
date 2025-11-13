@@ -1,15 +1,16 @@
 import mysql.connector
-
+import toml
 print("🚀 Iniciando prueba de conexión...")
 
 try:
+    config = toml.load("api_fastapi/pyproject.toml")["database"]
     print("antes de la conexión")
     conn = mysql.connector.connect(
-        host="",
-        port=,
-        user="",
-        password="",
-        database="",
+        host=config["host"],
+        port=config["port"],
+        user=config["user"],
+        password=config["password"],
+        database=config["database"],
         connection_timeout=5
     )
     print("✅ Conexión exitosa a la base de datos")
