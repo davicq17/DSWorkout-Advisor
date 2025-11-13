@@ -1,5 +1,6 @@
 #ignora el entorno de pyhton 
 api/.venv/
+api_fastapi/.venv/
 
 #mignora dependencias del svelte
 my_svelte/node_modules

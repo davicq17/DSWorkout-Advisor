@@ -19,12 +19,12 @@ def get_conn():
     try:
         print("iniciando conexión")
         conn = mysql.connector.connect(
-            host="",
-            user="",
-            password="",
-            database="",
-            port=,
-             ssl_ca=os.path.join(os.path.dirname(__file__),"certs","ca.pem"),
+          host=db_conf["host"],
+          port=db_conf["port"],
+          user=db_conf["user"],
+          password=db_conf["password"],
+          database=db_conf["database"],
+          connection_timeout=5
         )
         print("conexión exitosa, se devolvera")
         return conn

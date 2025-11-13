@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api_fastapi.routes import usuarios, login, routine, workout
+from .routes import usuarios
 
 
 app = FastAPI()

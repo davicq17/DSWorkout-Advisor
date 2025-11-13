@@ -25,6 +25,6 @@ host = ""
 user = ""
 password = ""
 database = ""
-port =""
+port =
 [dependency-groups]
 dev = ["uv", "pip"]
