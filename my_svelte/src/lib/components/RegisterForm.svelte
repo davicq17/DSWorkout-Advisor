@@ -22,7 +22,7 @@
       surnameI.trim()==="" ||
       emailI.trim()===""||
       passwordI.trim()===""||
-      CellI.trim()==="" ||
+      CellI==="" ||
       rolI==="0"
     ){ alert("VERIFICAR CAMPOS VACÍOS")
     return;
@@ -45,24 +45,26 @@
     //verificar si existe el usuario ingresado
     try{
       //verificar si existe el usuario ingresado
-      const response = await axios.get(`http://127.0.0.1:5000/VerifyUser/${usernameI}`);
-      const n = response.data.length;
+      const response = await axios.get(`http://127.0.0.1:8000/Login/VerifyUser/${usernameI}`);
+      const n = response.data["Existe"];
       console.log(n);
-      let existe = n!== 0;
+      let existe = n==1;
       // si el usuario no existe se procede con el registro
       if(existe==false){
         if(permite==true){
-          await axios.post("http://127.0.0.1:5000/registro",{
-                username: usernameI,
-                name: nameI,
-                surname: surnameI,
-                email: emailI,
-                password: passwordI,
-                cell: CellI,
-                rol: rolI,
-                status: 1,
-                especialidad: especialidadI,
-            }, 
+          await axios.post("http://127.0.0.1:8000/Usuarios/registro",{
+                data:{
+                  username: usernameI,
+                  name: nameI,
+                  surname: surnameI,
+                  email: emailI,
+                  password: passwordI,
+                  cell: CellI,
+                  rol: rolI,
+                  status: 1,
+                  especialidad: especialidadI,
+              }
+            }
           )
           .then(function(response){
             alert("registro exitoso");
@@ -85,7 +87,7 @@
    };
     // especialidad in/visible
     const Speciality=$derived(rolI==="3"? "block":"none");
-    // rol admin 
+    // rol admin
     const rolregist=$derived(tipoRegistro==="admin"?"block":"none");
     // funciones de verificación
     const NombreLetras = (nameI:string)=>{
