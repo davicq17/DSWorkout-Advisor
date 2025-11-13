@@ -17,14 +17,16 @@ except Exception as e:
 def get_conn():
     """Crea y retorna una conexión a MySQL usando los datos del archivo TOML."""
     try:
+        print("iniciando conexión")
         conn = mysql.connector.connect(
-            host=db_conf["host"],
-            user=db_conf["user"],
-            password=db_conf["password"],
-            database=db_conf["database"],
-            port=db_conf["port"],
-            connection_timeout=4
+            host="",
+            user="",
+            password="",
+            database="",
+            port=,
+             ssl_ca=os.path.join(os.path.dirname(__file__),"certs","ca.pem"),
         )
+        print("conexión exitosa, se devolvera")
         return conn
     except mysql.connector.Error as err:
         print(f"❌ Error conectando a MySQL: {err}")

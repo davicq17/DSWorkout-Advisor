@@ -63,7 +63,7 @@ def regis_rutina(routine:RoutineRegist, token: dict=Depends(verify_token)):
 
 #TABLA DE RUTINAS
 @router.get("/getRoutines")
-def routines(token: dict= Depends(verify_token)):
+def routines():#token: dict= Depends(verify_token)
     try:
         conn = get_conn()
         cur = conn.cursor()
