@@ -1,12 +1,14 @@
 import datetime
-from fastapi import APIRouter,HTTPException
-from db import get_conn
+from fastapi import APIRouter, HTTPException, Header
+from api_fastapi.db import get_conn
 import jwt
-from config import SECRET_KEY
+from jwt import ExpiredSignatureError, InvalidTokenError
+from api_fastapi.config import SECRET_KEY, ALGORITHM
 
 
 router = APIRouter(prefix="/Login", tags=["Login"]);
 
+##LOGIN
 @router.get("/{username}")
 def login(username: str):
     try:
@@ -40,18 +42,9 @@ def login(username: str):
                 "iat": datetime.datetime.now()
             }
 
-            token = jwt.encode(jpayload, SECRET_KEY, algorithm="HS256") 
+            token = jwt.encode(jpayload, SECRET_KEY, ALGORITHM) 
 
-            content = {
-                "id": id,
-                "username": username,
-                "name": name,
-                "surname": surname,
-                "password": password,
-                "rol": rol,
-                "status": status,
-                "token": token
-            }
+            content = {"id": id,"username": username,"name": name,"surname": surname,"password": password,"rol": rol, "status": status,"token": token}
 
             payload_list.append(content)
 
@@ -59,3 +52,38 @@ def login(username: str):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+## VERIFICAR EL TOKEN#
+@router.get("/verify_token")
+def verify_token(Authorization: str = Header(...)):
+    try: 
+        if not Authorization.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Formato de token invalido")
+        token = Authorization.split("")[1]
+        payload = jwt.decode(token,SECRET_KEY, algorithms=[ALGORITHM])
+        return payload
+    except ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="El token ha expirado")
+    except InvalidTokenError:
+        raise HTTPException(status_code=403, detail="Token invalido")
+
+## VRIFICAR LA EXIXSTENCIA DE UN USUARIO
+@router.get("/VerifyUser/{username}")
+def VerifyUser(username:str):
+    try:
+        conn=get_conn()
+        cur=conn.cursor()
+        cur.execute('SELECT username FROM usuarios WHERE username = %s', (username,))
+        rv = cur.fetchall()
+        cur.close()
+        conn.close()
+        payload = []
+        content = {}
+
+        for result in rv:
+            content = {"username":result[0]}
+            payload.append(content)
+        return payload
+    except Exception as e:
+        print("Error en la verificacion: {e}")
+        raise HTTPException(status_code=500, detail="Error verificando usuario")
