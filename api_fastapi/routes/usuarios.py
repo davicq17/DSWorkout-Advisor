@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from api_fastapi.db import get_conn
-from api_fastapi.routes.login import verify_token
+from .login import verify_token
 from pydantic import BaseModel
 
 router = APIRouter(prefix="/Usuarios", tags=["Usuarios"])
@@ -9,7 +9,7 @@ router = APIRouter(prefix="/Usuarios", tags=["Usuarios"])
 @router.get("/TableUser")
 def TableUser():
     print("entrando a la ruta de la tabla")
-    try: 
+    try:
         conn = get_conn()
         print("conexion establecida con MySQL")
         cur = conn.cursor()
@@ -32,7 +32,7 @@ def TableUser():
             }
             payload.append(content)
         print( "Datos obtenidos")
-        return payload 
+        return payload
     except Exception as e:
         print(" Error en TableUser:", e)
         print(e)
@@ -63,7 +63,7 @@ def registro(data: RegistroUser):
         #obtengo el ultimo ID insertado
         cur.execute("SELECT LAST_INSERT_ID()")
         id_usuario = cur.fetchone()[0]
-        
+
         #verifica que el usuario es porfecsional
         if data.rol == '3' and data.especialidad:
             cur.execute("INSERT INTO profesional (id_usuario, `specialty`) VALUES (%s,%s)",(id_usuario,data.especialidad))

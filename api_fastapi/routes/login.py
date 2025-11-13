@@ -2,8 +2,8 @@ import datetime
 from fastapi import APIRouter, HTTPException, Header
 from api_fastapi.db import get_conn
 import jwt
-from jwt import ExpiredSignatureError, InvalidTokenError
-from api_fastapi.config import SECRET_KEY, ALGORITHM
+from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
+from ..config import SECRET_KEY, ALGORITHM
 
 
 router = APIRouter(prefix="/Login", tags=["Login"]);
@@ -42,7 +42,7 @@ def login(username: str):
                 "iat": datetime.datetime.now()
             }
 
-            token = jwt.encode(jpayload, SECRET_KEY, ALGORITHM) 
+            token = jwt.encode(jpayload, SECRET_KEY, ALGORITHM)
 
             content = {"id": id,"username": username,"name": name,"surname": surname,"password": password,"rol": rol, "status": status,"token": token}
 
@@ -56,7 +56,7 @@ def login(username: str):
 ## VERIFICAR EL TOKEN#
 @router.get("/verify_token")
 def verify_token(Authorization: str = Header(...)):
-    try: 
+    try:
         if not Authorization.startswith("Bearer "):
             raise HTTPException(status_code=401, detail="Formato de token invalido")
         token = Authorization.split("")[1]

@@ -3,7 +3,7 @@ import toml
 print("🚀 Iniciando prueba de conexión...")
 
 try:
-    config = toml.load("api_fastapi/pyproject.toml")["database"]
+    config = toml.load("pyproject.toml")["database"]
     print("antes de la conexión")
     conn = mysql.connector.connect(
         host=config["host"],
