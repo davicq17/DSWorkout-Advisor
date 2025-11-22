@@ -73,16 +73,12 @@ def VerifyUser(username:str):
     try:
         conn=get_conn()
         cur=conn.cursor()
-        cur.execute('SELECT username FROM usuarios WHERE username = %s', (username,))
-        rv = cur.fetchall()
+        cur.execute('SELECT count(*) as Existe FROM usuarios WHERE username = %s', (username,))
+        rv = cur.fetchone()
         cur.close()
         conn.close()
-        payload = []
-        content = {}
-
-        for result in rv:
-            content = {"username":result[0]}
-            payload.append(content)
+        payload={"Existe":rv[0]}
+        print(payload)
         return payload
     except Exception as e:
         print("Error en la verificacion: {e}")

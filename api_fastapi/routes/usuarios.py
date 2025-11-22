@@ -42,10 +42,12 @@ def TableUser():
 class RegistroUser(BaseModel):
     username:str
     name:str
+    surname:str
     email:str
     password: str
     cell:str
     rol: int
+    status:int
     especialidad: str | None = None
 @router.post("/registro")
 def registro(data: RegistroUser):

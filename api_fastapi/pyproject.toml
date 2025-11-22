@@ -16,8 +16,9 @@ dependencies = [
     "uvicorn[standard]>=0.38.0",
     "ultralytics>=8.3.227",
     "toml>=0.10.2",
-    "mysql-connector-python>=9.5.0",
+    "mysql-connector>=2.2.9",
     "pyjwt>=2.10.1",
+    "mysql-connector-python>=9.5.0",
 ]
 
 [database]
@@ -25,6 +26,6 @@ host = ""
 user = ""
 password = ""
 database = ""
-port =
+port =""
 [dependency-groups]
 dev = ["uv", "pip"]
