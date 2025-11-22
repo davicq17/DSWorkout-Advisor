@@ -1,5 +1,6 @@
 import tomllib
 import mysql.connector
+from mysql.connector import Error
 from fastapi import HTTPException
 import os
 
