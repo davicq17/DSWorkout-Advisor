@@ -1,5 +1,5 @@
 import tomllib
-import mysql.connector
+import pymysql
 from fastapi import HTTPException
 import os
 
@@ -17,15 +17,15 @@ except Exception as e:
 def get_conn():
     """Crea y retorna una conexión a MySQL usando los datos del archivo TOML."""
     try:
-        conn = mysql.connector.connect(
+        conn = pymysql.connect(
             host=db_conf["host"],
             user=db_conf["user"],
             password=db_conf["password"],
             database=db_conf["database"],
-            port=db_conf["port"],
-            connection_timeout=4
+            port=int(db_conf["port"]),
+            connect_timeout=4
         )
         return conn
-    except mysql.connector.Error as err:
+    except pymysql.Error as err:
         print(f"❌ Error conectando a MySQL: {err}")
         raise HTTPException(status_code=500, detail=f"Error conectando a la base de datos: {err}")
