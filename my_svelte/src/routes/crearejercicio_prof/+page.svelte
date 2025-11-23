@@ -1,17 +1,17 @@
 <script lang="ts">
    import axios from "axios";
    import { onMount } from "svelte";
-   import DataTable from "datatables.net-dt";
-   import "datatables.net-dt/css/jquery.dataTables.css";
+   import DataTable from 'datatables.net-dt';
+   import 'datatables.net-dt/css/dataTables.dataTables.css';
  // variables del registro de un ejercicio
    let nombreI= $state("");
    let guideI= $state("");
    let tipoI= $state("");
    let equipoI= $state("");
    let nivelI= $state("");
-   let repetitionsI= $state("");
-   let seriesI = $state("");
-   let durationI = $state("");
+   let repetitionsI= $state(0);
+   let seriesI = $state(0);
+   let durationI = $state(0);
  // variables de la tabla de ejercicios
  let tabla:any;
  let ejercicios:any[]= [];
@@ -20,23 +20,25 @@
    const Init_Data = async()=>{
     try{
         // se realiza la petición
-        const response = await axios.get("http://127.0.0.1:5000/ejercicioTabla");
+        const response = await axios.get("http://127.0.0.1:8000/Workout/ejercicioTabla");
         ejercicios = await response.data;
+        console.log('ejerciios cargados:',ejercicios)
     }catch(err){
         console.log("Error:", err);
     }
    }
    // registro de un ejercicio 
    const Registrar = async ()=>{
+    console.log("se registrara un ejericicio")
     // verificamos campos vacios 
-     if(nombreI ==="" || guideI ==="" ||tipoI ==="" ||equipoI ==="" ||nivelI ==="" ||repetitionsI ==="" ||seriesI ==="" 
-     ||durationI ===""){
+     if(nombreI ==="" || guideI ==="" ||tipoI ==="" ||equipoI ==="" ||nivelI ==="" ||repetitionsI ===0 ||seriesI ===0 
+     ||durationI ===0){
         alert("verifique queno existan campos vacios!");
         return
      }
      try{
         // se envian los datos a la ruta de la api
-        await axios.post("http://127.0.0.1:5000/registroEjercicio",{
+        await axios.post("http://127.0.0.1:8000/Workout/registroEjercicio",{
             nombre:nombreI,
             guia:guideI,
             tipo:tipoI,
@@ -56,9 +58,6 @@
    // se carga los datos antes qde que cargue el don
  onMount(async()=>{
     await Init_Data();
- })
-// se crea la data Table luego de confirmar que existen datos
- $effect(()=>{
     if(tabla){
         tabla.destroy();
         tabla=null;
@@ -98,7 +97,9 @@
         }
       })
     }
- });
+ })
+// se crea la data Table luego de confirmar que existen datos
+ $effect(()=>{});
 </script>
 <main>
     <div class="container col-lg-10 col-md-10 col-sm-12"><!--div1-->

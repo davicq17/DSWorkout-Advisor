@@ -9,5 +9,9 @@ declare global {
 		// interface Platform {}
 	}
 }
+	const cerranSesion =()=>{
+		localStorage.removeItem("token");
+		window.location.href="/";
+	};
 
 export {};

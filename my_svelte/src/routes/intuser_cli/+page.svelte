@@ -3,9 +3,10 @@
 	import 'datatables.net-dt/css/dataTables.dataTables.css';
 	import axios from 'axios';
 	import { onMount } from 'svelte';
+	import { cerrarSesion, getToken,verifyToken } from '$lib/utils/AuthClient';
+	import { type UserData } from '$lib/utils/AuthClient';
 	// variables reactivas
-	let token: string = $state('');
-	let user: any = $state();
+	let user: UserData | null = $state(null);
 	let RutinaUser = $state('');
 	let nameRutin = $state('');
 	let nivelR = $state('');
@@ -15,16 +16,10 @@
 	let dataA: any[] = $state([]);
 	const GetRutina = async () => {
 		try {
-			token = localStorage.getItem('token') || '';
-			const response = await axios.get(`http://127.0.0.1:8000/Login/verify_token/${token}`);
-			if (response.data.rol !== 2) {
-				alert('No tienes permiso para acceder a esta página');
-				window.location.href = '/';
-			}
-			user = response.data;
-
+			let response = await verifyToken();
+			user = response?.user;
 			const respon = await axios.get(
-				`http://127.0.0.1:8000/Diagnosticos/GetDiagnostico/${user.id}`
+				`http://127.0.0.1:8000/Diagnosticos/GetDiagnostico/${user?.id}`
 			);
 
 			if (respon.data.informacion == null) {
@@ -57,13 +52,19 @@
 						data: dataA
 					});
 				}, 0);
-			} else{
+			} else {
 				//VERIFICAR SI EL USUARIO YA HA REALIZADO EL FORMULARIO DE ESTADO FISICO
-				
-				
-				RutinaUser = 'Aun no se te ha asignado una rutina';
-				alert('Debes realizar el formulario de estado fisico para recibir un diagnostico');
-				window.location.href = '/fisicestate_cli';
+				const res = await axios.get(`http://127.0.0.1:8000/Diagnosticos/GetFisicState/${user?.id}`);
+				if (!res.data) {
+					alert('Debes realizar el formulario de estado fisico para recibir un diagnostico');
+					cerrarSesion();
+				} else {
+					RutinaUser = 'Aun no se te ha asignado una rutina';
+					alert(
+						'Ya realizaste el formulario de estado fisico, espera a que un instructor te asigne una rutina'
+					);
+					cerrarSesion();
+				}
 			}
 		} catch (err) {
 			console.log('Error: ', err);
@@ -72,6 +73,7 @@
 	// carga la funcón antes de que se carge la pagina
 	onMount(() => {
 		GetRutina();
+		verifyToken();
 	});
 </script>
 

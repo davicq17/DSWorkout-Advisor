@@ -7,7 +7,7 @@ router = APIRouter(prefix="/Workout", tags=["Workout"])
 
 ##TABLA DE EJERCICIOS
 @router.get("/ejercicioTabla")
-def ejercicio_tabla(token: dict = Depends(verify_token)):
+def ejercicio_tabla():
     try:
         conn = get_conn()
         cur= conn.cursor()
@@ -46,9 +46,9 @@ class RegistroWorkout(BaseModel):
     nivel:str
     repeticiones:int
     series:int
-    duracion:str
+    duracion:int
 @router.post("/registroEjercicio")
-def registro_ejercicio(workout: RegistroWorkout, tor: dir = Depends(verify_token)):
+def registro_ejercicio(workout: RegistroWorkout):
     try:
         conn= get_conn()
         cur = conn.cursor()
@@ -64,7 +64,7 @@ def registro_ejercicio(workout: RegistroWorkout, tor: dir = Depends(verify_token
     
 #PEDIR INFORMACION DEL EJERCICIO
 @router.get("/WorkoutById/{id}")
-def workout_by_id(id:int, toke: dict= Depends(verify_token)):
+def workout_by_id(id:int):
     try:
         conn = get_conn()
         cur = conn.cursor()
