@@ -91,7 +91,7 @@ class UserUpdate(BaseModel):
     rol: int
 
 @router.put("/editUser/{id}")
-def editUser(id:int, user:UserUpdate, tor: dict = Depends(verify_token)):
+def editUser(id:int, user:UserUpdate):
     try:
       conn = get_conn()
       cur = conn.cursor()
@@ -108,7 +108,7 @@ def editUser(id:int, user:UserUpdate, tor: dict = Depends(verify_token)):
 
 ## ELIMINAR USUARIO
 @router.put("/delete/{id}")
-def deleteUser(id:int, tor: dict = Depends(verify_token)):
+def deleteUser(id:int):
     try:
         conn= get_conn()
         cur = conn.cursor()

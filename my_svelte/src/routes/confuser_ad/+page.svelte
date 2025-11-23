@@ -3,6 +3,8 @@
 	import Navbar from '$lib/components/Navbar.svelte';
 	import axios from 'axios';
 	import { onMount } from 'svelte';
+	import DataTable from 'datatables.net-dt';
+	import 'datatables.net-dt/css/dataTables.dataTables.css';
 	// almacen de datos
 	let usuarios: any[] = $state([]);
 	let userEdit: any = $state(null);
@@ -21,6 +23,13 @@
 				rolTxt: u.rol === 1 ? 'Administrador' : u.rol === 2 ? 'Usuario' : 'Profesional'
 			}));
 			console.log('usuarios cargados:', usuarios);
+			setTimeout(() => {
+				new DataTable('#tablaa', {
+					paging: true,
+					searching: true,
+					scrollY: '400px'
+				});
+			}, 0);
 		} catch (err) {
 			console.error('Error al cargar usuarios:', err);
 		}
