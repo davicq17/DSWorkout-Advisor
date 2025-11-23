@@ -65,3 +65,25 @@ def regisFisicState(FisicState: FisicState):
         return {"informacion": "Registro de estado fisico Exitoso"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+#Saber si el usuario ya ha realizado el formulario de estado fisico con el estado positivo
+@router.get("/GetFisicState/{id}")
+def GetFisicState(id: int):
+    try:
+        conn = get_conn()
+        cur = conn.cursor()
+        query = '''
+            SELECT * FROM evaluacion WHERE id_cliente = %s AND status = 1
+        '''
+        cur.execute(query, (id,))
+        rv = cur.fetchone()
+
+        cur.close()
+        conn.close()
+
+        if rv:
+            return True
+        return False
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

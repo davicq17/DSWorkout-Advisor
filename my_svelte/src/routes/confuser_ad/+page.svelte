@@ -5,6 +5,8 @@
 	import { onMount } from 'svelte';
 	import DataTable from 'datatables.net-dt';
 	import 'datatables.net-dt/css/dataTables.dataTables.css';
+	import { verifyToken } from '$lib/utils/AuthClient';
+
 	// almacen de datos
 	let usuarios: any[] = $state([]);
 	let userEdit: any = $state(null);
@@ -14,7 +16,9 @@
 	// referencia a la instancia de DataTable
 	let tableInstance: any = null;
 
-	onMount(() => {
+	onMount(async () => {
+		// Verificar token antes de cargar datos
+		await verifyToken();
 		Init_Data();
 	});
 	// pedir datos de la bd
@@ -88,7 +92,7 @@
 </script>
 
 <!--para está entrega-->
-<Navbar rol={1} />
+<Navbar/>
 <div class="container my-5">
 	<!--principal-->
 	<div class="col-12 d-flex justify-content-center">
