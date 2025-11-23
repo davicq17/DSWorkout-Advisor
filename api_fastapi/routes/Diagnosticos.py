@@ -40,3 +40,28 @@ def GetDiagnostico(id: int):
         return {"informacion": "SinDiagnostico"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+class FisicState(BaseModel):
+    id: int
+    age: int
+    gender: str
+    height: float
+    weight: float
+    fr_train: str
+    goal: str
+    restrictions: str
+
+@router.post("/regisFisicState")
+def regisFisicState(FisicState: FisicState):
+    try:
+        conn = get_conn()
+        cur = conn.cursor()
+        query = '''
+            INSERT INTO evaluacion (id_cliente,age,gender,height,weight,fr_train,goal,restrictions,status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
+        '''
+        cur.execute(query, (FisicState.id, FisicState.age, FisicState.gender, FisicState.height, FisicState.weight, FisicState.fr_train, FisicState.goal, FisicState.restrictions,1))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return {"informacion": "Registro de estado fisico Exitoso"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
