@@ -67,7 +67,7 @@ def registro(data: RegistroUser):
         id_usuario = cur.fetchone()[0]
 
         #verifica que el usuario es porfecsional
-        if data.rol == '3' and data.especialidad:
+        if data.rol == 3 and data.especialidad:
             cur.execute("INSERT INTO profesional (id_usuario, `specialty`) VALUES (%s,%s)",(id_usuario,data.especialidad))
             print("inserccón de profesional realizada")
         # confirma la transaccion
@@ -88,14 +88,14 @@ class UserUpdate(BaseModel):
     email:str
     password: str
     cell: str
-    rol:str
+    rol: int
 
 @router.put("/editUser/{id}")
 def editUser(id:int, user:UserUpdate, tor: dict = Depends(verify_token)):
     try:
       conn = get_conn()
       cur = conn.cursor()
-      sql = """UPDATE usuarios SET username=%s, name=%s, surname=%s, email=%s, password=%s, cell=%s, rol=%sWHERE id=%s"""
+      sql = """UPDATE usuarios SET username=%s, name=%s, surname=%s, email=%s, password=%s, cell=%s, rol=%s WHERE id=%s"""
       values = ( user.username, user.name,user.surname, user.email,user.password,user.cell,user.rol,id)
       cur.execute(sql, values)
       conn.commit()
@@ -103,8 +103,8 @@ def editUser(id:int, user:UserUpdate, tor: dict = Depends(verify_token)):
       conn.close()
       return {"informacion": "Actualización realizada con éxito "}
     except Exception as e:
-     print("Eror en edit_user",e)
-     raise HTTPException(status_code=500, detail=str(e));
+     print(f"Error en edit_user: {e}")
+     raise HTTPException(status_code=500, detail=str(e))
 
 ## ELIMINAR USUARIO
 @router.put("/delete/{id}")
@@ -114,12 +114,15 @@ def deleteUser(id:int, tor: dict = Depends(verify_token)):
         cur = conn.cursor()
         cur.execute("UPDATE usuarios SET status = %s WHERE id = %s", (0, id))
         conn.commit()
+        
+        if cur.rowcount == 0:
+            cur.close()
+            conn.close()
+            raise HTTPException(status_code=404, detail="Usuario no encontrado")
+        
         cur.close()
         conn.close()
-
-        if cur.rowcount == 0:
-            raise HTTPException(status_code=404, detail="Usuario no encontrado")
         return{"información":"Registro eliminado"}
     except Exception as e:
-        print("Error aliminado usuario: {e}")
+        print(f"Error eliminando usuario: {e}")
         raise HTTPException(status_code=500, detail=str(e))
