@@ -1,8 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-#from api_fastapi.routes import usuarios, login, routine, workout
-from .routes import usuarios
-from .routes import login
+from .routes import usuarios, login, routine, workout,Diagnosticos
 
 
 app = FastAPI()
@@ -16,11 +14,11 @@ app.add_middleware(
 )
 
 #RUTAS
-app.include_router(usuarios.router);
-app.include_router(login.router);
-#app.include_router(routine.router);
-#app.include_router(workout.router);
-
+app.include_router(usuarios.router)
+app.include_router(login.router)
+app.include_router(routine.router)
+app.include_router(workout.router)
+app.include_router(Diagnosticos.router)
 
 @app.get("/")
 def read_root():
