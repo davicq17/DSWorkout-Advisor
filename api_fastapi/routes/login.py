@@ -1,15 +1,16 @@
-import datetime
+import time
+import jwt
 from fastapi import APIRouter, HTTPException, Header
 from api_fastapi.db import get_conn
-import jwt
 from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 from ..config import SECRET_KEY, ALGORITHM
 
 
-router = APIRouter(prefix="/Login", tags=["Login"]);
+
+router = APIRouter(prefix="/Login", tags=["Login"])
 
 ##LOGIN
-@router.get("/{username}")
+@router.get("/User/{username}")
 def login(username: str):
     try:
         conn = get_conn()
@@ -32,17 +33,18 @@ def login(username: str):
             id, username, name, surname, password, rol, status = result
 
             # Generar token JWT
+            now = int(time.time())
             jpayload = {
                 "id": id,
                 "username": username,
                 "name": name,
                 "surname": surname,
                 "rol": rol,
-                "exp": datetime.datetime.now() + datetime.timedelta(hours=6),
-                "iat": datetime.datetime.now()
+                "exp": now + 60*60*6,
+                "iat": now
             }
 
-            token = jwt.encode(jpayload, SECRET_KEY, ALGORITHM)
+            token = jwt.encode(jpayload, SECRET_KEY, algorithm=ALGORITHM)
 
             content = {"id": id,"username": username,"name": name,"surname": surname,"password": password,"rol": rol, "status": status,"token": token}
 
@@ -54,18 +56,19 @@ def login(username: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 ## VERIFICAR EL TOKEN#
-@router.get("/verify_token")
-def verify_token(Authorization: str = Header(...)):
+@router.get("/verify_token/{token}")
+def verify_token(token: str):
     try:
-        if not Authorization.startswith("Bearer "):
-            raise HTTPException(status_code=401, detail="Formato de token invalido")
-        token = Authorization.split("")[1]
-        payload = jwt.decode(token,SECRET_KEY, algorithms=[ALGORITHM])
+        if not token:
+            raise HTTPException(status_code=401, detail="No se envio el token")
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
     except ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="El token ha expirado")
     except InvalidTokenError:
         raise HTTPException(status_code=403, detail="Token invalido")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 ## VRIFICAR LA EXIXSTENCIA DE UN USUARIO
 @router.get("/VerifyUser/{username}")

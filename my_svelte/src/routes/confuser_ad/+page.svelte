@@ -10,12 +10,19 @@
 	let userEdit: any = $state(null);
 	let userEliminar: any = $state(null);
 
+	let token: string = $state('');
+	// referencia a la instancia de DataTable
+	let tableInstance: any = null;
+
 	onMount(() => {
 		Init_Data();
 	});
 	// pedir datos de la bd
 	const Init_Data = async () => {
 		try {
+			token = localStorage.getItem('token') || '';
+			const response1 = await axios.get(`http://127.0.0.1:8000/Login/verify_token/${token}`);
+			console.log(response1.data);
 			const response = await axios.get('http://127.0.0.1:8000/Usuarios/TableUser');
 			usuarios = response.data.map((u: any) => ({
 				...u,
@@ -24,7 +31,13 @@
 			}));
 			console.log('usuarios cargados:', usuarios);
 			setTimeout(() => {
-				new DataTable('#tablaa', {
+				// Destruir la instancia anterior si existe
+				if (tableInstance) {
+					tableInstance.destroy();
+				}
+
+				// Crear nueva instancia
+				tableInstance = new DataTable('#tablaa', {
 					paging: true,
 					searching: true,
 					scrollY: '400px'
@@ -94,7 +107,6 @@
 				<th scope="col">Nombre</th>
 				<th scope="col">Apellidos</th>
 				<th scope="col">Correo</th>
-				<th scope="col">Contraseña</th>
 				<th scope="col">Celular</th>
 				<th scope="col">Rol</th>
 				<th scope="col">Acciones</th>
@@ -108,7 +120,6 @@
 					<td>{user.name}</td>
 					<td>{user.surname}</td>
 					<td>{user.email}</td>
-					<td>{user.password}</td>
 					<td>{user.cell}</td>
 					<td>{user.rolTxt}</td>
 					<td>

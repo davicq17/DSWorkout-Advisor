@@ -4,7 +4,7 @@
 	import axios from 'axios';
 	import { onMount } from 'svelte';
 	// variables reactivas
-	const { token } = $props(); // el rol y el token vienen del servidor
+	let token: string = $state('');
 	let user: any = $state();
 	let RutinaUser = $state('');
 	let nameRutin = $state('');
@@ -15,11 +15,17 @@
 	let dataA: any[] = $state([]);
 	const GetRutina = async () => {
 		try {
-			// const response = await axios.get(`http://127.0.0.1:8000/Login/verify_token/${token}`);
-			// user = response.data;
+			token = localStorage.getItem('token') || '';
+			const response = await axios.get(`http://127.0.0.1:8000/Login/verify_token/${token}`);
+			if (response.data.rol !== 2) {
+				alert('No tienes permiso para acceder a esta página');
+				window.location.href = '/';
+			}
+			user = response.data;
 
-			// const respon = await axios.get(`http://127.0.0.1:8000/GetDiagnostico/${user.id}`);
-			const respon = await axios.get(`http://127.0.0.1:8000/Diagnosticos/GetDiagnostico/1`);
+			const respon = await axios.get(
+				`http://127.0.0.1:8000/Diagnosticos/GetDiagnostico/${user.id}`
+			);
 
 			if (respon.data.informacion == null) {
 				RutinaUser = respon.data.diagnostico;
@@ -51,7 +57,10 @@
 						data: dataA
 					});
 				}, 0);
-			} else {
+			} else{
+				//VERIFICAR SI EL USUARIO YA HA REALIZADO EL FORMULARIO DE ESTADO FISICO
+				
+				
 				RutinaUser = 'Aun no se te ha asignado una rutina';
 				alert('Debes realizar el formulario de estado fisico para recibir un diagnostico');
 				window.location.href = '/fisicestate_cli';
