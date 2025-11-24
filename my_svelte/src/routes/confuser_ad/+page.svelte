@@ -5,7 +5,6 @@
 	import { onMount } from 'svelte';
 	import DataTable from 'datatables.net-dt';
 	import 'datatables.net-dt/css/dataTables.dataTables.css';
-	import { verifyToken } from '$lib/utils/AuthClient';
 
 	// almacen de datos
 	let usuarios: any[] = $state([]);
@@ -17,16 +16,12 @@
 	let tableInstance: any = null;
 
 	onMount(async () => {
-		// Verificar token antes de cargar datos
-		await verifyToken();
 		Init_Data();
 	});
 	// pedir datos de la bd
 	const Init_Data = async () => {
 		try {
 			token = localStorage.getItem('token') || '';
-			const response1 = await axios.get(`http://127.0.0.1:8000/Login/verify_token/${token}`);
-			console.log(response1.data);
 			const response = await axios.get('http://127.0.0.1:8000/Usuarios/TableUser');
 			usuarios = response.data.map((u: any) => ({
 				...u,

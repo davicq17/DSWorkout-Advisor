@@ -1,7 +1,8 @@
 <script lang="ts">
+  import Navbar from '$lib/components/Navbar.svelte';
   import { onMount } from "svelte";
-  import DataTable from "datatables.net-dt";
-  import "datatables.net-dt/css/jquery.dataTables.css";
+  import DataTable from 'datatables.net-dt';
+	import 'datatables.net-dt/css/dataTables.dataTables.css';
 	import axios from "axios";
 	import { goto } from "$app/navigation";
 
@@ -35,10 +36,7 @@
   // carga la funcion antes de que cargue el DOM
   onMount(async()=>{
      await Init_Data();  
-  })
-
-  $effect(()=>{
-    if(usuarios.length > 0 && !tabla){
+     if(usuarios.length > 0 && !tabla){
       // creamos la tabla
       tabla= new DataTable("#tablab",{
         data: usuarios.map(u =>[
@@ -72,8 +70,10 @@
       })
     }
   })
+
   
 </script>
+<Navbar/>
 <!--contenedor de todo-->
       <div class="container col-md-11 col-sm-11 my-5">
         <div>

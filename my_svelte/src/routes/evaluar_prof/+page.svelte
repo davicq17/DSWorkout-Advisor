@@ -1,5 +1,4 @@
 <script lang="ts">
-  // falat enviar diagnostico y asignar rutina. 
   import { onMount } from "svelte";
   import axios from "axios";
   import DataTable from "datatables.net-dt";
@@ -167,7 +166,7 @@ const predecir = async ()=>{
     const CargarEjercicios = async ()=>{
     try{
       // realizamos la petición
-      const response = await axios.get('http://127.0.0.1:5000/ejercicioTabla')
+      const response = await axios.get('http://127.0.0.1:8000/Workout/ejercicioTabla')
       ejercicios= response.data;
       if(tablaPD) tablaPD.destroy?.();
       tablaPD = new DataTable('#tablaWorkout_Personal',{
@@ -217,7 +216,7 @@ const predecir = async ()=>{
 
   const CargarInformacion = async (id: string) => {
     try {
-      const { data } = await axios.get(`http://127.0.0.1:5000/WorkoutById/${id}`);
+      const { data } = await axios.get(`http://127.0.0.1:8000/Workout/WorkoutById/${id}`);
       predicName = data.nombre;
       predicType = data.type;
       predicDescription = data.desc;
@@ -239,7 +238,7 @@ const predecir = async ()=>{
 
     // se actualiza la duración de la rutina
     try{
-      const {data}= await axios.get(`http://127.0.0.1:5000/WorkoutById/${id}`);
+      const {data}= await axios.get(`http://127.0.0.1:8000/Workout/WorkoutById/${id}`);
       totalDuracion += data.duration;
     }catch(err){
       console.log("error :",err)
@@ -250,7 +249,7 @@ const predecir = async ()=>{
   const RegistrarRutina = async()=>{
     try{
       // se define el creador de la rutina
-      const verify = await axios.get(`http://127.0.0.1:5000/verify_token/${token}`);
+      const verify = await axios.get(`http://127.0.0.1:8000/Login/verify_token/${token}`);
       const creadorR= verify.data.id;
       
       await axios.post("http://127.0.0.1:5000/regisRutina",{
@@ -320,7 +319,7 @@ const predecir = async ()=>{
     }
     
     try{
-      const response = await axios.get(`http://127.0.0.1:5000/verify_token/${token}`);
+      const response = await axios.get(`http://127.0.0.1:8000/Login/verify_token/${token}`);
       pro= response.data.id;
       const datos = localStorage.getItem('datos');
       const dataR= sessionStorage.getItem('Rutina');

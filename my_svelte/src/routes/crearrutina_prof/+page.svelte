@@ -1,8 +1,10 @@
 <script lang="ts">
+  import Navbar from '$lib/components/Navbar.svelte';
 	import axios from "axios";
   import { onMount } from "svelte";
-  import DataTable from "datatables.net-dt";
-  import "datatables.net-dt/css/jquery.dataTables.css";
+  import DataTable from 'datatables.net-dt';
+  import 'datatables.net-dt/css/dataTables.dataTables.css';
+  let token: string = $state('');
 // variables de ejercicios
   let tabla:any;
   let ejercicios:any[]=[];
@@ -15,7 +17,6 @@
   let EEquipment= $state("");
   let ELevel= $state("");
 // variables de rutinas
- const {token}=$props();// el token vienen del servidor
  let tablaR:any;
  let rutinas:any[]=$state([]);
 
@@ -33,7 +34,7 @@
   const CargarEjercicios = async ()=>{
     try{
       // realizamos la petición
-      const response = await axios.get('http://127.0.0.1:5000/ejercicioTabla')
+      const response = await axios.get('http://127.0.0.1:8000/Workout/ejercicioTabla')
       ejercicios= response.data;
       if(tabla) tabla.destroy?.();
       tabla = new DataTable('#tablaWorkout_routine',{
@@ -82,7 +83,7 @@
 
   const CargarInformacion = async (id: string) => {
     try {
-      const { data } = await axios.get(`http://127.0.0.1:5000/WorkoutById/${id}`);
+      const { data } = await axios.get(`http://127.0.0.1:8000/Workout/WorkoutById/${id}`);
       EName = data.nombre;
       EType = data.type;
       EDescription = data.desc;
@@ -104,7 +105,7 @@
 
     // se actualiza la duración de la rutina
     try{
-      const {data}= await axios.get(`http://127.0.0.1:5000/WorkoutById/${id}`);
+      const {data}= await axios.get(`http://127.0.0.1:8000/Workout/WorkoutById/${id}`);
       totalDuracion += data.duration;
     }catch(err){
       console.log("error :",err)
@@ -116,7 +117,7 @@
   const CargarRutinasBIG= async ()=>{
     try{
       // realizamos la petición de las rutinas 
-      const respon = await axios.get('http://127.0.0.1:5000/getRoutines');
+      const respon = await axios.get('http://127.0.0.1:8000/Routine/getRoutines');
       rutinas= respon.data;
       if(tablaR) tablaR.destroy?.();
       tablaR = new DataTable('#tablaR',{
@@ -139,17 +140,19 @@
 
   const RegistrarRutina = async()=>{
     try{
+      token = localStorage.getItem('token') || '';
       // se define el creador de la rutina
-      const verify = await axios.get(`http://127.0.0.1:5000/verify_token/${token}`);
+      const verify = await axios.get(`http://127.0.0.1:8000/Login/verify_token/${token}`);
       const creadorR= verify.data.id;
-      
-      await axios.post("http://127.0.0.1:5000/regisRutina",{
+      console.log("creador: ",creadorR)
+      console.log("ejerciciso a guardar:",ejerciciosSeleccionados.map(e=>e.id).join(","))
+      await axios.post("http://127.0.0.1:8000/Routine/regisRutina",{
           creador: creadorR,
           nombre: nombreR,
           descripcion: descripcionR,
           duracion: totalDuracion,
           nivel: nivleR,
-          ejercicios: ejerciciosSeleccionados.map(e=> e.id).join(";"), 
+          ejercicios: ejerciciosSeleccionados.map(e=> e.id).join(","), 
       });
 
       alert("Rutina registrada correctamente.");
@@ -169,6 +172,7 @@
 
   }
 </script>
+<Navbar/>
 <div class="container-fluid col-lg-10 px-4"><!--principal-->
   <h3 class="mt-3">RUTINAS</h3>
   <div class="nav nav-tabs" id="nav-tab" role="tablist"><!--div1-->

@@ -7,6 +7,6 @@
 	let { children,data } = $props();  // traemos la data de +layout.server.ts
 </script>
 
-<!--{<Navbar {data}/>-->
+
 {@render children?.()}
 <Footer/>
