@@ -2,7 +2,7 @@
 	import Navbar from '$lib/components/Navbar.svelte';
 </script>
 
-<Navbar />
+<Navbar/>
 <!--carrusel-->
 <div class="d-flex-colum container">
 	<div

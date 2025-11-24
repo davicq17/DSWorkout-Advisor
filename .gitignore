@@ -8,3 +8,4 @@ my_svelte/node_modules
 #Ignora archivos de coplicaión 
 __pycache__/
 *.pyc
+api_fastapi/pyproject.toml
