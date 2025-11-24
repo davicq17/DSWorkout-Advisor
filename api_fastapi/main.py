@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .routes import usuarios, login, routine, workout,Diagnosticos,Recomendacion
+from .routes import usuarios, login, routine, workout,Diagnosticos,Recomendacion,evaluacion
 
 
 app = FastAPI()
@@ -20,6 +20,7 @@ app.include_router(routine.router)
 app.include_router(workout.router)
 app.include_router(Diagnosticos.router)
 app.include_router(Recomendacion.router)
+app.include_router(evaluacion.router)
 
 @app.get("/")
 def read_root():

@@ -31,13 +31,13 @@
   let C_altura=$state(0);
   let C_peso= $state(0);
   let C_fr_train= $state("");
-  let C_Duration_sesion =$state(0);
+  //let C_Duration_sesion =$state(0);
   let C_objetivo= $state("");
-  let C_Equipamiento =$state("");
+  //let C_Equipamiento =$state("");
   let C_Restriccion = $state("");
 
   // variables tabla de ejercicios
-  let tablaPD:DataTables.Api | null = null;
+  let tablaPD:any;
   let ejercicios:any[]=[];
   let ejerciciosSeleccionados:{id:string,nombre:string}[]=$state([]);
   let totalDuracion = $state(0);
@@ -108,7 +108,7 @@ const predecir = async ()=>{
       alert("completa todos los campos para predecir el rendimiento.");
       return;
     }
-    const res = await axios.post("http://127.0.0.1:5000/predictWorkout",{
+    const res = await axios.post("http://127.0.0.1:8000/Evalucion/predictWorkout",{
       equipment: P_equipamiento,
       bodypart: P_bodypart,
       type: P_type,
@@ -248,8 +248,9 @@ const predecir = async ()=>{
       // se define el creador de la rutina
       const verify = await axios.get(`http://127.0.0.1:8000/Login/verify_token/${token}`);
       const creadorR= verify.data.id;
-      
-      await axios.post("http://127.0.0.1:5000/regisRutina",{
+      console.log("creador: ",creadorR)
+      console.log("ejerciciso a guardar:",ejerciciosSeleccionados.map(e=>e.id).join(","))
+      await axios.post("http://127.0.0.1:8000/Routine/regisRutina",{
           creador: creadorR,
           nombre: txtnombreR,
           descripcion: txtdescripcionR,
@@ -278,7 +279,7 @@ const predecir = async ()=>{
   const AsignarRutina = async ()=>{
     try{
       // cargar las rutinas al modal de las rutinas
-      const response = await axios.get("http://127.0.0.1:5000/RutinaModal");
+      const response = await axios.get("http://127.0.0.1:8000/Routine/RutinaModal");
       Rutinas = response.data;
       if(tablaAR) tablaAR.destroy?.();
       tablaAR = new DataTable('#tablaRutinas',{

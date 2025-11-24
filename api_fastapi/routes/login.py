@@ -1,8 +1,9 @@
 import time
 import jwt
-from fastapi import APIRouter, HTTPException, Header
-from api_fastapi.db import get_conn
+from fastapi import APIRouter, HTTPException
 from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
+from api_fastapi.db import get_conn
+
 from ..config import SECRET_KEY, ALGORITHM
 
 
