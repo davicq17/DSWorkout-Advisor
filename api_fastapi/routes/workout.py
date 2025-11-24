@@ -13,7 +13,7 @@ def ejercicio_tabla():
         cur= conn.cursor()
         cur.execute("SELECT * FROM workout")
         resultados = cur.fetchall()
-        cur.close
+        cur.close()
         conn.close()
 
         payload = []

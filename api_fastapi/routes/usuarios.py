@@ -74,9 +74,12 @@ def registro(data: RegistroUser):
         conn.commit()
         print("Transacción confirmada")
         cur.close()
+        conn.close()
         return{"informacion: Registro exitoso"}
     except Exception as e:
         conn.rollback()
+        cur.close()
+        conn.close()
         print(f"Error:{e}")
         raise HTTPException(status_code=500, detail=str(e))
 
