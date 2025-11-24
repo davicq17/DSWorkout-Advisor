@@ -1,7 +1,8 @@
 <script lang="ts">
+  import Navbar from '$lib/components/Navbar.svelte';
   import { onMount } from "svelte";
-  import DataTable from "datatables.net-dt";
-  import "datatables.net-dt/css/jquery.dataTables.css";
+  import DataTable from 'datatables.net-dt';
+	import 'datatables.net-dt/css/dataTables.dataTables.css';
 	import axios from "axios";
 	import { goto } from "$app/navigation";
 
@@ -11,7 +12,7 @@
   // preparación para evaluar al usuario
   const evaluarUsuario= async(id:number)=>{
     try{
-      const response = await axios.get(`http://127.0.0.1:5000/FisicById/${id}`);
+      const response = await axios.get(`http://127.0.0.1:8000/Diagnosticos/FisicById/${id}`);
       const datos = response.data;
       // se guardan los datos del usuario en el localstorage
       localStorage.setItem("datos",JSON.stringify(datos));
@@ -24,9 +25,10 @@
 
   const Init_Data= async ()=>{
     try{
-      const response = await axios.get("http://127.0.0.1:5000/TableFisic");
+      const response = await axios.get("http://127.0.0.1:8000/Usuarios/TableFisic");
       //console.log(response)
        usuarios=response.data;
+       console.log("usuarios:", usuarios)
     }catch(err){
       console.log('Error: ',err);
     }
@@ -34,11 +36,12 @@
 
   // carga la funcion antes de que cargue el DOM
   onMount(async()=>{
-     await Init_Data();  
-  })
-
-  $effect(()=>{
-    if(usuarios.length > 0 && !tabla){
+     await Init_Data();
+     if(tabla){
+        tabla.destroy();
+        tabla=null;
+    }  
+     if(usuarios.length > 0 && !tabla){
       // creamos la tabla
       tabla= new DataTable("#tablab",{
         data: usuarios.map(u =>[
@@ -49,7 +52,7 @@
           u.gender,
           u.height,
           u.weight,
-          u.Fr_train,
+          u.fr_train,
           // boton 
           `<button aria-label="evaluar" class="btn btn-success evaluar-btn" data-id="${u.id}">
                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"class="bi bi-clipboard2-check-fill" viewBox="0 0 16 16">
@@ -72,8 +75,10 @@
       })
     }
   })
+
   
 </script>
+<Navbar/>
 <!--contenedor de todo-->
       <div class="container col-md-11 col-sm-11 my-5">
         <div>

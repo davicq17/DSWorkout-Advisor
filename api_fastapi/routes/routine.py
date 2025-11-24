@@ -11,43 +11,43 @@ class RoutineRegist(BaseModel):
     creador:int
     nombre:str
     descripcion:str
-    duracion:str
+    duracion:int
     nivel:str
     ejercicios: str 
 
 @router.post("/regisRutina")
-def regis_rutina(routine:RoutineRegist, token: dict=Depends(verify_token)):
+def regis_rutina(routine:RoutineRegist):
     try:
          conn = get_conn()
          cur = conn.cursor()
 
          # Insertar la rutina
          sql_routine = """
-             INSERT INTO routine (id_prof, nombre, descripcion, duration, nivel)
-             VALUES (%s, %s, %s, %s, %s)
+             INSERT INTO routine (id_prof, nombre, descripcion, duration, nivel,status)
+             VALUES (%s, %s, %s, %s, %s,%s)
          """
          cur.execute(sql_routine, (
              routine.creador,
              routine.nombre,
              routine.descripcion,
              routine.duracion,
-             routine.nivel
+             routine.nivel,
+             1
          ))
 
          # Obtener el ID de la rutina recién creada
-         cur.execute("SELECT LAST_INSERT_ID()")
-         id_routine = cur.fetchone()[0]
+         #cur.execute("SELECT LAST_INSERT_ID()")
+         conn.commit()
+         id_routine = cur.lastrowid;
 
          # Construir el query para insertar los ejercicios
          ejercicios = routine.ejercicios.split(',')
-         peticion = "INSERT INTO routine_workout (id_routine, id_workout, orden) VALUES "
-         valores = []
+         sql="""INSERT INTO routine_workout (id_routine, id_workout, orden,status) VALUES(%s,%s,%s,%s)"""
+         
 
          for i, ejercicio in enumerate(ejercicios, start=1):
-             valores.append(f"({id_routine},{int(ejercicio)},{i})")
+             cur.execute(sql,(id_routine,int(ejercicio),i,1))
 
-         peticion += ",".join(valores)
-         cur.execute(peticion)
 
          conn.commit()
          cur.close()
@@ -101,3 +101,34 @@ def routines():#token: dict= Depends(verify_token)
         print(f"Error en routines: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+#CARGAR RUTINAS EN EL MODAL DE EVALUCION
+@router.get("/RutinaModal")
+def rutina_modal():
+    try:
+        conn = get_conn()
+        cur = conn.cursor()
+        sql="""
+            SELECT rw.id_routine,ro.nombre,(SElECT GROUP_CONCAT(w.nombre ORDER BY rw.orden SEPARATOR ', ') 
+            FROM defaultdb.workout w JOIN defaultdb.routine_workout rw ON w.id_workout=rw.id_workout 
+            WHERE rw.id_routine=ro.id_routine) AS ejercicios FROM defaultdb.routine ro 
+            JOIN defaultdb.routine_workout rw ON rw.id_routine=ro.id_routine GROUP BY ro.id_routine
+        """
+        cur.execute(sql)
+        rv = cur.fetchall()
+        cur.close()
+        conn.close()
+        payload= []
+
+        for result in rv:
+            content = {
+                "id_routine":result[0],
+                "nombre": result[1],
+                "ejercicios":result[2]
+            }
+            payload.append(content)
+        return payload
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Error en routine: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

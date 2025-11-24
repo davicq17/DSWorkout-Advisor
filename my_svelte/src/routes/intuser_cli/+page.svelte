@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Navbar from '$lib/components/Navbar.svelte';
 	import DataTable from 'datatables.net-dt';
 	import 'datatables.net-dt/css/dataTables.dataTables.css';
 	import axios from 'axios';
@@ -78,6 +79,7 @@
 </script>
 
 <!--contenedor de todo-->
+<Navbar/>
 <div class="container">
 	<div class="row my-4">
 		<div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">

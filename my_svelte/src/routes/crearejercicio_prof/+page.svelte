@@ -1,4 +1,5 @@
 <script lang="ts">
+    import Navbar from '$lib/components/Navbar.svelte';
    import axios from "axios";
    import { onMount } from "svelte";
    import DataTable from 'datatables.net-dt';
@@ -101,6 +102,7 @@
 // se crea la data Table luego de confirmar que existen datos
  $effect(()=>{});
 </script>
+<Navbar/>
 <main>
     <div class="container col-lg-10 col-md-10 col-sm-12"><!--div1-->
         <h3 class="mt-3">EJERCICIOS</h3>

@@ -40,6 +40,7 @@ def GetDiagnostico(id: int):
         return {"informacion": "SinDiagnostico"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
 class FisicState(BaseModel):
     id: int
     age: int
@@ -85,5 +86,36 @@ def GetFisicState(id: int):
         if rv:
             return True
         return False
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+# VER ESTADO FISICO MÁS DETALLADO SEGÚN EL ID
+@router.get("/FisicById/{id}")
+def fisic_by_id(id:int):
+    try:
+        conn = get_conn()
+        cur = conn.cursor()
+        query = '''
+            SELECT usuarios.id ,usuarios.name, usuarios.surname,evaluacion.age ,
+            evaluacion.gender, evaluacion.height, evaluacion.weight, evaluacion.fr_train, 
+            evaluacion.restrictions, evaluacion.goal 
+            FROM (defaultdb.usuarios JOIN defaultdb.evaluacion 
+            ON(usuarios.id = evaluacion.id_cliente AND usuarios.status = 1 AND id = %s))
+        '''
+        cur.execute(query, (id))
+        rv = cur.fetchone()
+        cur.close()
+        conn.close()
+
+        if rv:
+            content = {
+                "id": rv[0],"name": rv[1],
+                "surname": rv[2],"age": rv[3],
+                "gender": rv[4],"height": rv[5],
+                "weight": rv[6],"fr_train": rv[7],
+                "restrictions": rv[8],"goal": rv[9]
+            }
+            return content
+        return{"informacion":"Sin evaluación"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

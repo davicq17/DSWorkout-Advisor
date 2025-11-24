@@ -6,7 +6,7 @@
 	let data: UserData | null = $state(null);
 
 	onMount(async () => {
-		if (window.location.pathname !== '/' && window.location.pathname !== '/login' && window.location.pathname !== '/register' && window.location.pathname !== '/howstart') {
+		if (window.location.pathname !== '/' && window.location.pathname !== '/login' && window.location.pathname !== '/registro' && window.location.pathname !== '/howstart') {
 			data = await verifyToken();
 		}
 	});
@@ -56,7 +56,7 @@
 
 		<h1 class="h5 text-decoration-none text-white">
 			{#if data}
-				Bienvenido(a) {data.name}
+				 {data.name}
 			{/if}
 		</h1>
 
