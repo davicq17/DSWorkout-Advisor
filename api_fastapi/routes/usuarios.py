@@ -126,3 +126,35 @@ def deleteUser(id:int):
     except Exception as e:
         print(f"Error eliminando usuario: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+    
+# tabla de estados fisicos
+@router.get("/TableFisic")
+def TableFisc():
+    print("inciando ruta")
+    try:
+        conn = get_conn()
+        cur = conn.cursor()
+        cur.execute('SELECT usuarios.id ,usuarios.name, usuarios.surname, evaluacion.age ,evaluacion.gender, evaluacion.height, evaluacion.weight, evaluacion.fr_train, evaluacion.restrictions, evaluacion.goal FROM (defaultdb.usuarios JOIN defaultdb.evaluacion ON(usuarios.id = evaluacion.id_cliente AND usuarios.status = 1))')
+        rv = cur.fetchall()
+        cur.close()
+        conn.close()
+        payload = []
+        content= {}
+        for result in rv:
+            content = {
+                "id":result[0],
+                "name":result[1],
+                "surname":result[2],
+                "age":result[3],
+                "gender":result[4],
+                "height":result[5],
+                "weight":result[6],
+                "fr_train":result[7]
+            }
+            payload.append(content)
+        print("datos obtenidos")
+        return payload
+    except Exception as e:
+        print("Error en TablaFisic:",e)
+        print(e)
+        raise HTTPException(status_code=500, detail=str(e))

@@ -56,7 +56,7 @@
 
 		<h1 class="h5 text-decoration-none text-white">
 			{#if data}
-				Bienvenido(a) {data.name}
+				 {data.name}
 			{/if}
 		</h1>
 

@@ -101,3 +101,34 @@ def routines():#token: dict= Depends(verify_token)
         print(f"Error en routines: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+#CARGAR RUTINAS EN EL MODAL DE EVALUCION
+@router.get("/RutinaModal")
+def rutina_modal():
+    try:
+        conn = get_conn()
+        cur = conn.cursor()
+        sql="""
+            SELECT rw.id_routine,ro.nombre,(SElECT GROUP_CONCAT(w.nombre ORDER BY rw.orden SEPARATOR ', ') 
+            FROM defaultdb.workout w JOIN defaultdb.routine_workout rw ON w.id_workout=rw.id_workout 
+            WHERE rw.id_routine=ro.id_routine) AS ejercicios FROM defaultdb.routine ro 
+            JOIN defaultdb.routine_workout rw ON rw.id_routine=ro.id_routine GROUP BY ro.id_routine
+        """
+        cur.execute(sql)
+        rv = cur.fetchall()
+        cur.close()
+        conn.close()
+        payload= []
+
+        for result in rv:
+            content = {
+                "id_routine":result[0],
+                "nombre": result[1],
+                "ejercicios":result[2]
+            }
+            payload.append(content)
+        return payload
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Error en routine: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

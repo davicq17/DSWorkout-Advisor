@@ -12,7 +12,7 @@
   // preparación para evaluar al usuario
   const evaluarUsuario= async(id:number)=>{
     try{
-      const response = await axios.get(`http://127.0.0.1:5000/FisicById/${id}`);
+      const response = await axios.get(`http://127.0.0.1:8000/Diagnosticos/FisicById/${id}`);
       const datos = response.data;
       // se guardan los datos del usuario en el localstorage
       localStorage.setItem("datos",JSON.stringify(datos));
@@ -25,9 +25,10 @@
 
   const Init_Data= async ()=>{
     try{
-      const response = await axios.get("http://127.0.0.1:5000/TableFisic");
+      const response = await axios.get("http://127.0.0.1:8000/Usuarios/TableFisic");
       //console.log(response)
        usuarios=response.data;
+       console.log("usuarios:", usuarios)
     }catch(err){
       console.log('Error: ',err);
     }
@@ -35,7 +36,11 @@
 
   // carga la funcion antes de que cargue el DOM
   onMount(async()=>{
-     await Init_Data();  
+     await Init_Data();
+     if(tabla){
+        tabla.destroy();
+        tabla=null;
+    }  
      if(usuarios.length > 0 && !tabla){
       // creamos la tabla
       tabla= new DataTable("#tablab",{
@@ -47,7 +52,7 @@
           u.gender,
           u.height,
           u.weight,
-          u.Fr_train,
+          u.fr_train,
           // boton 
           `<button aria-label="evaluar" class="btn btn-success evaluar-btn" data-id="${u.id}">
                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"class="bi bi-clipboard2-check-fill" viewBox="0 0 16 16">

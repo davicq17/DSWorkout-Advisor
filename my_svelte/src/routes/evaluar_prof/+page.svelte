@@ -1,9 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import axios from "axios";
-  import DataTable from "datatables.net-dt";
-  import "datatables.net-dt/css/jquery.dataTables.css";
-  import type * as DataTables from "datatables.net-dt";
+  import DataTable from 'datatables.net-dt';
+	import 'datatables.net-dt/css/dataTables.dataTables.css';
 	import { goto } from "$app/navigation";
 
   // estructura para resivir los datos 
@@ -16,9 +15,7 @@
     height:number;
     weight:number;
     fr_train:string;
-    duration:number;
     goal:string;
-    equipment:string;
     restrictions:string;
   }
   // estrucutra de la rutina
@@ -92,10 +89,10 @@
           C_altura= contenido.height;
           C_peso= contenido.weight;
           C_fr_train= contenido.fr_train;
-          C_Duration_sesion =contenido.duration;
-          C_objetivo= contenido.goal;
-          C_Equipamiento = contenido.equipment;
           C_Restriccion = contenido.restrictions;
+          //C_Duration_sesion =contenido.duration;
+          C_objetivo= contenido.goal;
+          //C_Equipamiento = contenido.equipment;
         }
         CargarEjercicios();
     } else{
@@ -175,7 +172,7 @@ const predecir = async ()=>{
           e.nombre,
           e.tipo,
           e.rating,
-          `<button type="button" class="btn btn-success btn-sm" data-id="${e.id}" data-name="${e.nombre}" data-bs-toggle="modal" data-bs-target="#Agregar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+          `<button type="button" class="btn btn-success btn-sm" data-id="${e.id}" data-name="${e.nombre}" data-bs-target="#Agregar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
               <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
               </svg></button> 
               <button class= "btn btn-primary btn-sm" data-id="${e.id}" data-bs-target="#Información"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
@@ -362,47 +359,47 @@ const predecir = async ()=>{
   </div><!--div2-->
   <form class="row g-3">
     <div class="col-sm-12 col-md-6">
-      <label for="inputnombre">Nombre</label>
+      <label class="fw-bold" for="inputnombre">Nombre</label>
       <input bind:value={C_nombre} type="text" class="form-control" placeholder="Nombre" aria-label="First name" id="inputnombre" readonly>
     </div>
     <div class="col-sm-12 col-md-6">
-      <label for="inputApellido">Apellido</label>
+      <label class="fw-bold" for="inputApellido">Apellido</label>
       <input bind:value={C_apellido} type="text" class="form-control" placeholder="Apellido" aria-label="Last name" id="inputApellido"readonly>
     </div>
     <div class="col-sm-12 col-md-6 ">
-      <label for="inputage">Edad</label>
+      <label class="fw-bold" for="inputage">Edad</label>
       <input bind:value={C_age} type="text" class="form-control" id="inputage" placeholder="Edad"readonly>
     </div>
     <div class="col-sm-12 col-md-6">
-      <label for="inputgenero">Genero</label>
+      <label class="fw-bold" for="inputgenero">Genero</label>
       <input bind:value={C_genero} type="text" class="form-control" id="inputgenero"readonly>
     </div>
     <div class="col-md-6">
-      <label for="inputpeso">Peso(kg)</label>
+      <label class="fw-bold" for="inputpeso">Peso(kg)</label>
       <input bind:value={C_peso} type="text" class="form-control" id="inputpeso"readonly>
     </div>
     <div class="col-sm-12 col-md-6">
-      <label for="inputAltura">Altura(m)</label>
+      <label class="fw-bold" for="inputAltura">Altura(m)</label>
       <input bind:value={C_altura} type="text" class="form-control" id="inputAltura" placeholder="Altura(m)"readonly>
     </div>
       <div class="col-sm-12 col-md-6">
-        <label for="inputfr_train" class="form-label">Frecuencia con la que realiza actividad fisica</label>
+        <label  for="inputfr_train" class="form-label fw-bold">Frecuencia con la que realiza actividad fisica</label>
         <input bind:value={C_fr_train} type="text" id="inputfr_train" class="form-control"readonly>
       </div>
-      <div class="col-sm-12 col-md-6">
+      <!-- <div class="col-sm-12 col-md-6">
         <label for="inputDuration_sesion" class="form-label">Duracion de la sesión de ejerccio tipica</label>
         <input bind:value={C_Duration_sesion} type="text" class="form-control" id="inputDuration_sesion"readonly>
-      </div>
+      </div> -->
       <div class="col-sm-12 col-md-6">
-        <label for="inputObjetivo" class="form-label">Objetivo</label>
+        <label for="inputObjetivo" class="form-label fw-bold">Objetivo</label>
         <input bind:value={C_objetivo} type="text" class="form-control" id="inputObjetivo"readonly>
       </div>
-      <div class="col-sm-12 col-md-6">
+      <!--<div class="col-sm-12 col-md-6">
         <label for="inputEquipamiento" class="form-label">Equipamiento</label>
         <textarea bind:value={C_Equipamiento} name="" id="inputEquipamiento" class="form-control" readonly></textarea>
-      </div>
+      </div> -->
       <div class="col-md-12">
-        <label for="inputRestricción_alimenticia" class="form-label">Restricciones alimenticias</label>
+        <label for="inputRestricción_alimenticia" class="form-label fw-bold">Restricciones alimenticias</label>
         <input bind:value={C_Restriccion} type="text" class="form-control" id="inputRestricción_alimenticia"readonly>
       </div>
   </form>
@@ -418,7 +415,7 @@ const predecir = async ()=>{
     <div><!--div3.3-->
        <div class="row"><!--div3.4-->
           <div class="col-sm-12 col-md-6 mb-2">
-            <label for="inputTypePredic">Tipo de ejercicios</label>
+            <label class="fw-bold" for="inputTypePredic">Tipo de ejercicios</label>
             <select bind:value={P_type} id="inputTypePredic" class="form-select">
               <option value="Strength" selected>Fuerza</option>
               <option value="Stretching">Estiramiento</option>
@@ -429,7 +426,7 @@ const predecir = async ()=>{
           </div>
 
           <div class="col-sm-12 col-md-6 mb-2">
-              <label for="inputBodypartPredic">Parte del cuerpo</label>
+              <label class="fw-bold" for="inputBodypartPredic">Parte del cuerpo</label>
               <select bind:value={P_bodypart} id="inputBodypartPredic" class="form-select">
                 <option value="Abdominals" selected>Abdomen</option>
                 <option value="Adductors">Adductores</option>
@@ -452,7 +449,7 @@ const predecir = async ()=>{
        </div><!--div3.4-->
         <div class="row"><!--div3.5-->
           <div class="col-sm-12 col-md-6 mb-2">
-            <label for="inputLevelPredic">Nivel del ejercicio</label>
+            <label class="fw-bold" for="inputLevelPredic">Nivel del ejercicio</label>
             <select bind:value={P_level} id="inputLevelPredic" class="form-select">
               <option value="Beginner" selected>Principiante</option>
               <option value="Intermediate">Intermedio</option>
@@ -460,7 +457,7 @@ const predecir = async ()=>{
             </select>
           </div>
           <div class="col-sm-12 col-md-6">
-            <label for="inputEquipamiento"> Equipamiento</label>
+            <label class="fw-bold" for="inputEquipamiento"> Equipamiento</label>
             <select bind:value={P_equipamiento} id="inputEquipamiento" class="form-select">
               <option value="Body Only" selected>Ninguno</option>
               <option value="Bands">Bandas</option>
@@ -485,7 +482,7 @@ const predecir = async ()=>{
             </div>
           </div>
           <div class="col-lg-6 col-md-6">
-            <label for="RutinaA">Rutina Asignada</label>
+            <label class="fw-bold" for="RutinaA">Rutina Asignada</label>
             <input bind:value={rutinaAsignada} type="text" id="RutinaA" class="form-control" readonly placeholder="Rutina sin asignar">
           </div>
         </div><!--div3.6--> 
