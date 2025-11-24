@@ -3,7 +3,8 @@ from pydantic import BaseModel
 from api_fastapi.db import get_conn
 from pymysql import Error
 import requests
-
+import tomllib
+import os
 
 router = APIRouter(prefix="/Recomendacion", tags=["Recomendacion"])
 
@@ -16,10 +17,19 @@ router = APIRouter(prefix="/Recomendacion", tags=["Recomendacion"])
 # Hugging Face API - OpenAI-Compatible Router
 # =========================
 
+# Cargar configuración desde el archivo TOML
+try:
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    toml_path = os.path.join(base_dir,"pyproject.toml")
+    with open(toml_path, "rb") as f:
+        config = tomllib.load(f)
+        HF_API_TOKEN = config["hugging_face"]["token"]
+except Exception as e:
+    raise RuntimeError(f"❌ No se pudo cargar la configuración de Hugging Face: {e}")
+
 # Using Hugging Face Router API with OpenAI-compatible format
 HF_API_URL = "https://router.huggingface.co/v1/chat/completions"    
 HF_MODEL = "Qwen/Qwen2.5-72B-Instruct:fastest"  # Fast, capable model
-HF_API_TOKEN = "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"
 HF_HEADERS = {
     "Authorization": f"Bearer {HF_API_TOKEN}",
     "Content-Type": "application/json"
