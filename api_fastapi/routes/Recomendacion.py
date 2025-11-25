@@ -28,8 +28,10 @@ router = APIRouter(prefix="/Recomendacion", tags=["Recomendacion"])
 
 # Cargar configuración desde el archivo TOML
 try:
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    toml_path = os.path.join(base_dir,"pyproject.toml")
+    # __file__ apunta a api_fastapi/routes/Recomendacion.py
+    # Necesitamos subir 2 niveles: routes/ -> api_fastapi/ -> archivo
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    toml_path = os.path.join(base_dir, "pyproject.toml")
     with open(toml_path, "rb") as f:
         config = tomllib.load(f)
         HF_API_TOKEN = config["hugging_face"]["token"]
