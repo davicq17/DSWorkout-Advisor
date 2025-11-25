@@ -4,6 +4,7 @@
 	import 'datatables.net-dt/css/dataTables.dataTables.css';
 	import axios from 'axios';
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation'
 	import { cerrarSesion, getToken,verifyToken } from '$lib/utils/AuthClient';
 	import { type UserData } from '$lib/utils/AuthClient';
 	// variables reactivas
@@ -17,8 +18,8 @@
 	let dataA: any[] = $state([]);
 	const GetRutina = async () => {
 		try {
-			let response = await verifyToken();
-			user = response?.user;
+			user = await verifyToken();
+			console.log("id del cliente",user?.id)
 			const respon = await axios.get(
 				`http://127.0.0.1:8000/Diagnosticos/GetDiagnostico/${user?.id}`
 			);
@@ -30,7 +31,7 @@
 				descripR = respon.data.descripcion;
 				IdRutina = respon.data.idR;
 
-				const res = await axios.get(`http://127.0.0.1:8000/EjerciciosUser/${IdRutina}`);
+				const res = await axios.get(`http://127.0.0.1:8000/Diagnosticos/EjerciciosUser/${IdRutina}`);
 				let ejercicios = res.data;
 				// se limpia el arreglo antes de mapear para evitar duplicados
 				dataA = [];
@@ -58,13 +59,13 @@
 				const res = await axios.get(`http://127.0.0.1:8000/Diagnosticos/GetFisicState/${user?.id}`);
 				if (!res.data) {
 					alert('Debes realizar el formulario de estado fisico para recibir un diagnostico');
-					cerrarSesion();
+					goto("/fisicestate_cli");
 				} else {
 					RutinaUser = 'Aun no se te ha asignado una rutina';
 					alert(
 						'Ya realizaste el formulario de estado fisico, espera a que un instructor te asigne una rutina'
 					);
-					cerrarSesion();
+					//cerrarSesion();
 				}
 			}
 		} catch (err) {

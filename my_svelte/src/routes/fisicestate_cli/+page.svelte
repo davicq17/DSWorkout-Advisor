@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 	import axios from 'axios';
 
 	// variables reactivas
@@ -55,7 +56,7 @@
 				restrictions: restrictionsI
 			});
 			alert(res.data.informacion);
-			window.location.href = '/fisicestate_cli';
+			goto('/intuser_cli');
 		} catch (err) {
 			console.log('Error: ', err);
 		} finally {

@@ -147,3 +147,31 @@ def add_diagnostico(data: DiagnosticoCreate):
     except Exception as e:
         print("Error:", e)
         raise HTTPException(status_code=500, detail=str(e))
+
+# MOTRAS LOS EJERCICIOS ASIGNADOS AL USUARIO
+@router.get("/EjerciciosUser/{idRutina}")
+def EjerciciosUser(idRutina:int):
+    try:
+        conn= get_conn()
+        cur = conn.cursor()
+        query = """SELECT w.id_workout, w.nombre, w.duration, w.repetitions, w.series FROM defaultdb.workout w JOIN defaultdb.routine_workout rw ON rw.id_workout=w.id_workout WHERE rw.id_routine=%s"""
+        values= (idRutina,)
+        cur.execute(query,values)
+        rv = cur.fetchall()
+        cur.close()
+        conn.close()
+        payload = []
+
+        for result in rv:
+            content= {
+                "id":result[0],
+                "nombre":result[1],
+                "duracion":result[2],
+                "repeticiones":result[3],
+                "series":result[4]
+            }
+            payload.append(content)
+        return payload
+    except Exception as e:
+        print("Error:", e)
+        raise HTTPException(status_code=500, detail=str(e))

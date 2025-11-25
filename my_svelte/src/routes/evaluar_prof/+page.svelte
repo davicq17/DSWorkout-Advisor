@@ -49,7 +49,7 @@
   let predicLevel= $state("");
 
   // variables de registrar rutinas
-  const {token}=$props();// el token vienen del servidor
+  let token: string = $state('');// el token vienen del servidor
   let txtnombreR=$state("");
   let txtdescripcionR=$state("");
   let txtnivelR =$state("");
@@ -101,6 +101,7 @@
     }
   }
 // PREDICCÓN CON MACHINE LEARNING
+const handleClick = (e: Event) => ClickEjercicio(e as MouseEvent);
 const predecir = async ()=>{
   try{
     // Validar campos antes de enviar
@@ -120,6 +121,7 @@ const predecir = async ()=>{
     console.log("Error: ",err);
   }
 };
+  
   // MODAL DE RUTINA PERSONALISADA
     // FILTRO DE PREDICCIÓN 
     const FiltroPredic = async ()=>{
@@ -145,10 +147,11 @@ const predecir = async ()=>{
               paging:false,
               scrollY:"200px"
             })
-            const handleClick = (e: Event) => ClickEjercicio(e as MouseEvent);
-            document.querySelector("#tablaWorkout_Personal")?.removeEventListener("click", handleClick);
+            // quitar eventos anteriores
+            const table = document.querySelector("#tablaWorkout_Personal");
+            table?.removeEventListener("click", handleClick);
             // se escuchan los eventos de click
-            document.querySelector("#tablaWorkout_Personal")?.addEventListener("click", handleClick);
+            table?.addEventListener("click", handleClick);
            }else{
             alert("No se encontraron ejercicios con puntaje similar a "+predic);
            }
@@ -182,31 +185,28 @@ const predecir = async ()=>{
         paging:false,
         scrollY:"200px",
       })
-      const handleClick = (e: Event) => ClickEjercicio(e as MouseEvent);
-      document.querySelector("#tablaWorkout_Personal")?.removeEventListener("click", handleClick);
+
+      const table = document.querySelector("#tablaWorkout_Personal");
+      table?.removeEventListener("click", handleClick);
       // se escuchan los eventos de click
-      document.querySelector("#tablaWorkout_Personal")?.addEventListener("click", handleClick);
+      table?.addEventListener("click", handleClick);
     }catch(err){
       console.error("Error cargando ejercicios:",err);
     }
   }
 // se maneja el evento del click
   const ClickEjercicio = (e:MouseEvent)=>{
-    e.stopPropagation();
-    const btn = (e.target as HTMLElement | null)?.closest('button') as HTMLButtonElement | null;
-    if(!btn) return;
-    const id = btn.dataset.id;
+    const btn =  e.target as HTMLElement;
+    const id = btn.dataset.id || btn.dataset.info;
     const nombre= btn.dataset.name;
     if(!id)return;
     // verificamos sobre cual boton se hizo click
     if(btn.classList.contains("btn-success")){
       if(!nombre)return;
       // agrega el ejercicio a la rutina
-      e.stopPropagation();
       AgregarEjercico(id,nombre);
     }else if(btn.classList.contains("btn-primary")){
       //muestra la información del ejercicio  
-      e.stopPropagation();
       CargarInformacion(id);
     }
   }
@@ -226,6 +226,7 @@ const predecir = async ()=>{
 
   const AgregarEjercico =  async (id:string, nombre:string)=>{
     // verica que el ejercicio no este en la rutina
+    console.log(id)
     if(ejerciciosSeleccionados.some(e=> e.id === id)){
       alert("El ejerccio ya está en la lista");
       return;
@@ -244,7 +245,12 @@ const predecir = async ()=>{
   }
   // FUNCIONES REGISTRAR RUTINA PERSONALIZADA 
   const RegistrarRutina = async()=>{
+    if(txtnombreR ==="" || txtdescripcionR ==="" || totalDuracion ===0 || txtnivelR ===""){
+        alert("verifique que no existan campos vacios!");
+        return
+     }
     try{
+      token = localStorage.getItem('token') || '';
       // se define el creador de la rutina
       const verify = await axios.get(`http://127.0.0.1:8000/Login/verify_token/${token}`);
       const creadorR= verify.data.id;
@@ -256,11 +262,12 @@ const predecir = async ()=>{
           descripcion: txtdescripcionR,
           duracion: totalDuracion,
           nivel: txtnivelR,
-          ejercicios: ejerciciosSeleccionados.map(e=> e.id).join(";"), 
+           ejercicios: ejerciciosSeleccionados.map(e=> e.id).join(",")
       });
 
       alert("Rutina registrada correctamente.");
       Cancelar();
+      AsignarRutina();
     }catch(err){
       console.log('error :',err);
     }
@@ -317,6 +324,7 @@ const predecir = async ()=>{
     }
     
     try{
+      token = localStorage.getItem('token') || '';
       const response = await axios.get(`http://127.0.0.1:8000/Login/verify_token/${token}`);
       pro= response.data.id;
       const datos = localStorage.getItem('datos');
@@ -410,7 +418,7 @@ const predecir = async ()=>{
       <h4 class="h4 fw-bold text-center">Diagnostico</h4>
     </div><!--div3.1-->
     <div class="form-floating mb-3 col-lg-12"><!--div3.2-->
-      <textarea class="form-control" placeholder="Leave a comment here" id="diagnostico" style="height: 100px; resize:none" ></textarea>
+      <textarea bind:value={diagnostico} class="form-control" placeholder="Leave a comment here" id="diagnostico" style="height: 100px; resize:none" ></textarea>
       <label for="diagnostico">Escriba aqui su diagnostico</label>
     </div><!--div3.2-->
     <div><!--div3.3-->

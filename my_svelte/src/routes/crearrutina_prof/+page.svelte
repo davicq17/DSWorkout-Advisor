@@ -34,7 +34,7 @@
   const CargarEjercicios = async ()=>{
     try{
       // realizamos la petición
-      const response = await axios.get('http://127.0.0.1:8000/Workout/ejercicioTabla')
+      const response = await axios.get('http://127.0.0.1:8000/Workout/EjercicioTabla')
       ejercicios= response.data;
       if(tabla) tabla.destroy?.();
       tabla = new DataTable('#tablaWorkout_routine',{
@@ -139,6 +139,10 @@
   }
 
   const RegistrarRutina = async()=>{
+    if(nombreR ==="" || descripcionR ==="" || totalDuracion ===0 || nivleR ===""){
+        alert("verifique que no existan campos vacios!");
+        return
+     }
     try{
       token = localStorage.getItem('token') || '';
       // se define el creador de la rutina

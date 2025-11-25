@@ -34,7 +34,7 @@
     // verificamos campos vacios 
      if(nombreI ==="" || guideI ==="" ||tipoI ==="" ||equipoI ==="" ||nivelI ==="" ||repetitionsI ===0 ||seriesI ===0 
      ||durationI ===0){
-        alert("verifique queno existan campos vacios!");
+        alert("verifique que no existan campos vacios!");
         return
      }
      try{
