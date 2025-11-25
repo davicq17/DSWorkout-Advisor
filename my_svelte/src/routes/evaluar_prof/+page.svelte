@@ -72,6 +72,11 @@
   let pro= $state("");
   let cliente:Datos | null = $state(null);
   let rutina:Rutina|null = $state(null);
+
+  // variables de recomendación IA
+  let Recomendacion = $state("");
+  let rutinasIA:any[]=[];
+  let tablaIA:any;
   // carga cuando ya estse renderizado el DOM
   onMount(()=>{
     CargarInfo();
@@ -316,6 +321,38 @@ const predecir = async ()=>{
     }
   }
 
+  // IARecomendación
+  const RecomendacionIA = async ()=>{
+    try{
+      // pedimos id de cliente
+      const datos = localStorage.getItem('datos');
+      if(datos)cliente= JSON.parse(datos) as Datos;
+      if(cliente){
+        const responseIA = await axios.post(`http://127.0.0.1:8000/Recomendacion/recomendacionAI/${cliente.id}`);
+        Recomendacion = responseIA.data.recomendacion_IA,
+        console.log("recomendación: ",Recomendacion);
+        /*rutinasIA = responseIA.data.rutinas_asignadas;
+        console.log("rutinas asignadas: ",)
+        if(tablaIA){
+          tablaIA.destroy();
+          tablaIA=null;
+        }
+        if(rutinasIA.length > 0 && !tablaIA){
+          // creamos la tabla de las rutinas asignadas
+          tablaIA= new DataTable("#tablaRutinas",{
+            data: rutinasIA.map(e=>[
+              e.id_routine,
+              e.id_cliente,
+              e.fecha_evaluación
+            ])
+          })
+        }*/
+      }
+    }catch(err){
+      console.log("Error: ", err)
+    }
+  }
+
   // DIAGNOSTICO
   const EnvioDiagnostico = async ()=>{
     if(diagnostico===""){
@@ -505,6 +542,10 @@ const predecir = async ()=>{
             <button data-bs-toggle="modal" data-bs-target="#rutinaPersonalizada" class="btn btn-info me-2 text-decoration-none text-white">
               Crear Rutina Personalizada
             </button>
+            <!-- BOTÓN PARA ABRIR EL OFFCANVAS -->
+            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">
+              Recomendación IA
+            </button>
           </div><!--div3.7-->
     </div><!--div3.3-->
   </div><!--div3-->
@@ -650,4 +691,46 @@ const predecir = async ()=>{
       </div><!--div5.1.1-->
     </div><!--div5.1-->
   </div><!--div5-->
+  <!-- offcanvas de la redomendaciín IA -->
+  <!-- OFFCANVAS (SLIDE OVER) -->
+   <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="recomentIA">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="recomentIA">Recomendación de la IA</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <!-- SECCIÓN: RECOMENDACIÓN IA -->
+        <div class="mb-4">
+          <h6>Recomendación</h6>
+          <div id="textoRecomendacionIA" style="white-space: pre-wrap;">
+            {#if Recomendacion}
+              {Recomendacion}
+            {/if}
+          </div>
+        </div>
+
+        <!-- BOTÓN PARA GENERAR RECOMENDACIÓN -->
+        <button class="btn btn-success mb-3" onclick={RecomendacionIA}>
+          Generar recomendación IA
+        </button>
+        <hr />
+
+        <!-- SECCIÓN: RUTINAS ASIGNADAS 
+          <div>
+          <h6>Rutinas Asignadas</h6>
+          <table id="tablaRutinas" class="table text-center table-bordered table-striped table-hover table-responsive table-responsive-sm table-responsive-lg table-responsive-md table-responsive-xl" style="width:100%">
+            <thead>
+              <tr>
+                <th><b>COD rutina</b></th>
+                <th><b>Cliente</b></th>
+                <th><b>fecha de evaluación</b></th>
+              </tr>
+            </thead>
+            <tbody class="text-center"></tbody>
+          </table>
+        </div> 
+        -->
+
+      </div>
+    </div>
 </div><!--principal-->
