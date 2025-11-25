@@ -21,7 +21,7 @@
    const Init_Data = async()=>{
     try{
         // se realiza la petición
-        const response = await axios.get("http://127.0.0.1:8000/Workout/ejercicioTabla");
+        const response = await axios.get("http://127.0.0.1:8000/Workout/EjercicioTabla");
         ejercicios = await response.data;
         console.log('ejerciios cargados:',ejercicios)
     }catch(err){

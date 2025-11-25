@@ -6,7 +6,7 @@ from pydantic import BaseModel
 router = APIRouter(prefix="/Workout", tags=["Workout"])
 
 ##TABLA DE EJERCICIOS
-@router.get("/ejercicioTabla")
+@router.get("/EjercicioTabla")
 def ejercicio_tabla():
     try:
         conn = get_conn()
@@ -18,7 +18,6 @@ def ejercicio_tabla():
 
         payload = []
         for result in resultados:
-            rating = result[9] if len(result) > 9 and result[9] is not None else 0
             content = {
                 "id": result[0],
                 "nombre": result[1],
@@ -29,7 +28,7 @@ def ejercicio_tabla():
                 "repeticiones": result[6],
                 "series": result[7],
                 "duracion": result[8],
-                "rating": rating
+                "rating": result[9]
             }
             payload.append(content)
         return payload
@@ -78,6 +77,36 @@ def workout_by_id(id:int):
         
         content = {"nombre": rv[0],"desc": rv[1],"type": rv[2],"equipment": rv[3],"level": rv[4],"duration": rv[5]}
         return content
+    except HTTPException as e:
+        raise
+    except Exception as e:
+        print(f"Error en workout by id: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    
+#FILTARA EJERCICIOS SEGUN EL RAITIN
+@router.get("/EjercicioFilter/{rating}")
+def workout_filter(rating:float):
+    try:
+        min=rating-1
+        max=rating+1
+        print(min,max)
+        conn= get_conn()
+        cur = conn.cursor()
+        cur.execute("SELECT w.id_workout,w.nombre,w.tipo,w.rating FROM defaultdb.workout w where w.rating BETWEEN %s and %s",(min,max))
+        rv=cur.fetchall()
+        cur.close()
+        conn.close()
+        payload=[]
+
+        for result in rv:
+            content={
+                "id":result[0],
+                "nombre":result[1],
+                "tipo":result[2],
+                "rating":result[3]
+            }
+            payload.append(content)
+        return payload
     except HTTPException as e:
         raise
     except Exception as e:

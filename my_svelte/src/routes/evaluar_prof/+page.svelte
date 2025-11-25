@@ -108,7 +108,7 @@ const predecir = async ()=>{
       alert("completa todos los campos para predecir el rendimiento.");
       return;
     }
-    const res = await axios.post("http://127.0.0.1:8000/Evalucion/predictWorkout",{
+    const res = await axios.post("http://127.0.0.1:8000/Recomendacion/predictWorkout",{
       equipment: P_equipamiento,
       bodypart: P_bodypart,
       type: P_type,
@@ -126,7 +126,7 @@ const predecir = async ()=>{
       if(predecirBool){
         try{
            // realizamos la petición con la predicción
-           const response = await axios.get(`http://127.0.0.1:5000/ejercicioFiltro/${predic}`)
+           const response = await axios.get(`http://127.0.0.1:8000/Workout/EjercicioFilter/${predic}`)
            ejercicios= response.data;
            if(ejercicios.length>0){
              if(tablaPD) tablaPD.destroy?.();
@@ -163,7 +163,7 @@ const predecir = async ()=>{
     const CargarEjercicios = async ()=>{
     try{
       // realizamos la petición
-      const response = await axios.get('http://127.0.0.1:8000/Workout/ejercicioTabla')
+      const response = await axios.get('http://127.0.0.1:8000/Workout/EjercicioTabla')
       ejercicios= response.data;
       if(tablaPD) tablaPD.destroy?.();
       tablaPD = new DataTable('#tablaWorkout_Personal',{
@@ -326,12 +326,12 @@ const predecir = async ()=>{
       const date = new Date();
       const fecha = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
       if(cliente && rutina){
-        const postRes = await axios.post('http://127.0.0.1:5000/addDiagnostico',{
+        const postRes = await axios.post('http://127.0.0.1:8000/Diagnosticos/AddDiagnostico',{
           id_cliente:cliente.id,
-          id_prof:pro,
+          rutina:rutina.id_routine, 
+          instructor:pro,
           fecha:fecha,
-          diagnostico:diagnostico,
-          rutina:rutina.id_routine  
+          diagnostico:diagnostico 
       });
       alert(postRes.data.informacion || "Diagnostico enviado correctamente")
       }

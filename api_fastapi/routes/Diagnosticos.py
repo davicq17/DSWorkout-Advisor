@@ -119,3 +119,31 @@ def fisic_by_id(id:int):
         return{"informacion":"Sin evaluación"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+# REGISTRO DEL DIAGNOSTICO DeL PROFESIONAL
+class DiagnosticoCreate(BaseModel):
+    id_cliente: int
+    rutina: int
+    instructor: int 
+    fecha: str
+    diagnostico: str
+
+
+@router.post("/AddDiagnostico")
+def add_diagnostico(data: DiagnosticoCreate):
+    try:
+        conn = get_conn()
+        cur = conn.cursor()
+
+        query = """INSERT INTO defaultdb.user_routine (id_cliente,id_routine,id_instructor, fecha_evaluación, diagnostico) VALUES (%s,%s,%s,%s,%s)"""
+        values = (data.id_cliente,data.rutina,data.instructor,data.fecha,data.diagnostico)
+
+        cur.execute(query, values)
+        conn.commit()
+        cur.close()
+
+        return {"informacion": "Registro exitoso"}
+
+    except Exception as e:
+        print("Error:", e)
+        raise HTTPException(status_code=500, detail=str(e))

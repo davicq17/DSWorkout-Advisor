@@ -63,12 +63,16 @@ def registro(data: RegistroUser):
                     (data.username, data.name, data.surname, data.email, data.password, data.cell, data.rol,1))
         print("insercion de usuario realizada")
         #obtengo el ultimo ID insertado
-        cur.execute("SELECT LAST_INSERT_ID()")
-        id_usuario = cur.fetchone()[0]
+        #cur.execute("SELECT LAST_INSERT_ID()")
+        id_usuario = cur.lastrowid
 
         #verifica que el usuario es porfecsional
         if data.rol == 3 and data.especialidad:
-            cur.execute("INSERT INTO profesional (id_usuario, `specialty`) VALUES (%s,%s)",(id_usuario,data.especialidad))
+            cur.execute("INSERT INTO Atributo (Descripción) VALUES (%s)",(data.especialidad,))
+            print("inserccón de especialidad realizada")
+            #obtengo el ultimo atrubuto ingresado 
+            id_atributo= cur.lastrowid
+            cur.execute("INSERT INTO usuario_atributo (id_user, id_atributo,status) VALUES (%s,%s,%s)",(id_usuario,id_atributo,1))
             print("inserccón de profesional realizada")
         # confirma la transaccion
         conn.commit()
