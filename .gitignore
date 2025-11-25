@@ -1,6 +1,7 @@
 #ignora el entorno de pyhton 
 api/.venv/
 api_fastapi/.venv/
+api_fastapi/pyproject.toml
 
 #mignora dependencias del svelte
 my_svelte/node_modules
@@ -8,4 +9,4 @@ my_svelte/node_modules
 #Ignora archivos de coplicaión 
 __pycache__/
 *.pyc
-api_fastapi/pyproject.toml
+
