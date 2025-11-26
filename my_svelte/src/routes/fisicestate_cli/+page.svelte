@@ -24,7 +24,7 @@
 		if (
 			!ageI ||
 			ageI < 0 ||
-			genderI === '0' ||
+			genderI === '' ||
 			!weightI ||
 			weightI < 0 ||
 			!heightI ||
@@ -85,8 +85,8 @@
 			<label for="inputGender" class="form-label">Género</label>
 			<select bind:value={genderI} class="form-select" id="inputGender">
 				<option value="0" selected></option>
-				<option value="M">Masculino</option>
-				<option value="F">Femenino</option>
+				<option value="Masculino">Masculino</option>
+				<option value="Femenino">Femenino</option>
 			</select>
 		</div>
 
