@@ -323,7 +323,13 @@ const predecir = async ()=>{
 
   // IARecomendación
   const RecomendacionIA = async ()=>{
+    const btn = document.getElementById("btnIA");
+    const loadin = document.getElementById("loadingMsg")
     try{
+      btn?.setAttribute("disabled","trues");
+      if(loadin){
+        loadin.style.display = "block";
+      }
       // pedimos id de cliente
       const datos = localStorage.getItem('datos');
       if(datos)cliente= JSON.parse(datos) as Datos;
@@ -350,6 +356,10 @@ const predecir = async ()=>{
       }
     }catch(err){
       console.log("Error: ", err)
+    }finally{
+      if(loadin){
+        loadin.style.display = "none";
+      }
     }
   }
 
@@ -702,6 +712,9 @@ const predecir = async ()=>{
         <!-- SECCIÓN: RECOMENDACIÓN IA -->
         <div class="mb-4">
           <h6>Recomendación</h6>
+          <div id="loadingMsg" style="display:none; font-weight:bold;">
+              Cargando recomendación...
+          </div>
           <div id="textoRecomendacionIA" style="white-space: pre-wrap;">
             {#if Recomendacion}
               {Recomendacion}
@@ -710,7 +723,7 @@ const predecir = async ()=>{
         </div>
 
         <!-- BOTÓN PARA GENERAR RECOMENDACIÓN -->
-        <button class="btn btn-success mb-3" onclick={RecomendacionIA}>
+        <button id="btnIA" class="btn btn-success mb-3" onclick={RecomendacionIA}>
           Generar recomendación IA
         </button>
         <hr />
